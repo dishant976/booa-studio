@@ -242,6 +242,32 @@ body.beat-on::after{box-shadow:inset 0 0 160px rgba(136,126,203,.35),inset 0 0 8
 .row-dot{width:6px;height:6px;border-radius:1px;background:#0d0d18;transition:background .04s;flex-shrink:0}
 .row-dot.active{background:var(--pink);box-shadow:0 0 4px var(--pink)}
 input[type=range]{accent-color:var(--purple);cursor:pointer}
+
+/* ── CLIP LAUNCHER ─────────────────────────────────────────── */
+.clips-wrap{border:1px solid var(--border);padding:12px;margin-bottom:10px;background:rgba(3,3,10,.9)}
+.clips-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.clips-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.clip-slot{border:1px solid var(--border2);padding:8px;display:flex;flex-direction:column;gap:5px;background:#060610;position:relative;min-height:120px;transition:border-color .2s,box-shadow .2s}
+.clip-slot.has-clip{border-color:#334}
+.clip-slot.playing-clip{border-color:var(--green)!important;box-shadow:0 0 16px rgba(92,171,94,.3)}
+.clip-slot.recording-clip{border-color:#f44!important;box-shadow:0 0 16px rgba(255,68,68,.3);animation:recpulse .5s infinite}
+@keyframes recpulse{0%,100%{box-shadow:0 0 16px rgba(255,68,68,.3)}50%{box-shadow:0 0 30px rgba(255,68,68,.5)}}
+.clip-num{font-size:7px;text-transform:uppercase;letter-spacing:.1em;color:#334;margin-bottom:2px}
+.clip-wave{height:30px;display:block;width:100%;border:1px solid #0d0d18;background:#030308;margin-bottom:4px}
+.clip-name{font-size:7px;color:#445;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-height:10px}
+.clip-controls{display:flex;gap:3px}
+.clip-btn{flex:1;padding:3px 0;border:1px solid var(--border2);background:transparent;color:#334;font-family:inherit;font-size:7px;cursor:pointer;text-transform:uppercase;transition:all .1s;text-align:center}
+.clip-btn:hover{color:#aaa;border-color:#558}
+.clip-btn.rec-btn{border-color:#600;color:#f44}
+.clip-btn.rec-btn:hover{background:rgba(255,68,68,.1)}
+.clip-btn.rec-btn.recording{background:rgba(255,68,68,.2);border-color:#f44;color:#f44}
+.clip-btn.play-btn.playing{background:rgba(92,171,94,.15);border-color:var(--green);color:var(--green)}
+.clip-btn.stop-btn{border-color:#556;color:#667}
+.clip-length-row{display:flex;align-items:center;gap:4px}
+.clip-length-row label{font-size:6px;color:#334;flex-shrink:0}
+.clip-len-btn{padding:1px 5px;border:1px solid var(--border);background:transparent;color:#334;font-family:inherit;font-size:6px;cursor:pointer;text-transform:uppercase}
+.clip-len-btn.active{background:#1a1a2a;color:#aab;border-color:#558}
+.master-clips-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -447,6 +473,38 @@ input[type=range]{accent-color:var(--purple);cursor:pointer}
       <div class="panel-title" style="margin-bottom:7px">Recording</div>
       <div style="font-size:8px;color:#334;line-height:1.9;margin-bottom:7px">1. Pick MP3/WEBM<br>2. Press REC<br>3. Press STOP REC<br>4. Click DL</div>
       <div style="font-size:8px;color:#223" id="recStatusTxt">No recording yet.</div>
+    </div>
+  </div>
+
+
+  <!-- CLIP LAUNCHER / LOOP STATION -->
+  <div class="clips-wrap">
+    <div class="clips-header">
+      <div>
+        <div class="panel-title">Loop Station — record clips, layer them, build your track</div>
+        <div style="font-size:7px;color:#334;margin-top:2px">Record a loop → keep it playing → record another on top → layer up</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:7px;color:#334">Bars</span>
+        <div class="btn-group">
+          <button class="tbtn" onclick="setClipBars(1,this)" style="font-size:7px;padding:2px 5px">1</button>
+          <button class="tbtn active" id="bars2btn" onclick="setClipBars(2,this)" style="font-size:7px;padding:2px 5px;border-left:none">2</button>
+          <button class="tbtn" onclick="setClipBars(4,this)" style="font-size:7px;padding:2px 5px;border-left:none">4</button>
+          <button class="tbtn" onclick="setClipBars(8,this)" style="font-size:7px;padding:2px 5px;border-left:none">8</button>
+        </div>
+        <button class="tbtn" onclick="stopAllClips()" style="font-size:7px;padding:2px 8px;border-color:#600;color:#f44">■ Stop All</button>
+      </div>
+    </div>
+    <div class="clips-grid" id="clipsGrid"></div>
+    <div class="master-clips-row">
+      <span style="font-size:7px;color:#334">Master clips vol</span>
+      <input type="range" min="0" max="100" value="80" id="clipsVol" style="width:80px;accent-color:var(--green)" oninput="setClipsVol(this.value)"/>
+      <span style="font-size:7px;color:#445" id="clipsVolV">80</span>
+      <div class="t-sep"></div>
+      <span style="font-size:7px;color:#334">Recorded clips:</span>
+      <span style="font-size:7px;color:var(--green)" id="clipsCount">0 / 8</span>
+      <div class="t-sep"></div>
+      <button class="tbtn" onclick="exportAllClips()" style="font-size:7px;padding:2px 8px">↓ Mix all to MP3</button>
     </div>
   </div>
 
@@ -1149,7 +1207,7 @@ function refreshMixerBtns(){
 
 function refreshMusic(){
   const ri=document.getElementById('rowInd');if(ri){ri.innerHTML='';for(let i=0;i<64;i++){const d=document.createElement('div');d.className='row-dot';d.id=`rd${i}`;ri.appendChild(d);}}
-  buildSeqGrid();buildDjPads();buildKbSelector();
+  buildSeqGrid();buildDjPads();buildKbSelector();buildClipsGrid();
   const agents=allAgents();const mw=document.getElementById('mixerWrap');if(!mw)return;mw.innerHTML='';
   if(!agents.length)return;
   agents.forEach(ag=>{
@@ -1214,6 +1272,239 @@ async function encMP3(){
 }
 function doDownload(){const blob=recFmt==='mp3'&&mp3Blob?mp3Blob:recBlob;if(!blob)return;const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`booa-mix.${recFmt==='mp3'&&mp3Blob?'mp3':'webm'}`;a.click();}
 
+
+// ═══════════════════════════════════════════════════════════════
+//  CLIP LAUNCHER / LOOP STATION
+// ═══════════════════════════════════════════════════════════════
+const NUM_CLIPS = 8;
+let clipBars = 2;           // how many bars to record
+let clips = Array(NUM_CLIPS).fill(null); // {buf, name, vol, loop}
+let clipSrcs = Array(NUM_CLIPS).fill(null);   // playing AudioBufferSourceNode
+let clipGains = Array(NUM_CLIPS).fill(null);  // per-clip GainNode
+let clipRecording = -1;     // which slot is recording (-1 = none)
+let clipRecProc = null;     // ScriptProcessor for capture
+let clipRecSamples = [];    // Float32Array chunks
+let clipsGainNode = null;   // master clips gain
+let clipsVol = 0.8;
+
+function setClipBars(n, btn) {
+  clipBars = n;
+  document.querySelectorAll('#bars2btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.btn-group .tbtn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+function setClipsVol(v) {
+  clipsVol = +v / 100;
+  document.getElementById('clipsVolV').textContent = v;
+  if (clipsGainNode) clipsGainNode.gain.value = clipsVol;
+}
+
+function ensureClipsGain() {
+  if (!actx) ensureCtx();
+  if (!clipsGainNode) {
+    clipsGainNode = actx.createGain();
+    clipsGainNode.gain.value = clipsVol;
+    clipsGainNode.connect(masterGain);
+  }
+}
+
+function buildClipsGrid() {
+  const el = document.getElementById('clipsGrid');
+  if (!el) return;
+  el.innerHTML = '';
+  for (let i = 0; i < NUM_CLIPS; i++) {
+    const clip = clips[i];
+    const isRec = clipRecording === i;
+    const isPlay = clipSrcs[i] !== null;
+    const row = i < 4 ? 'A' : 'B';
+    const num = (i % 4) + 1;
+
+    const slot = document.createElement('div');
+    slot.className = 'clip-slot' + (clip ? ' has-clip' : '') + (isPlay ? ' playing-clip' : '') + (isRec ? ' recording-clip' : '');
+    slot.id = `clipslot_${i}`;
+
+    slot.innerHTML = `
+      <div class="clip-num">CLIP ${row}${num}</div>
+      <canvas class="clip-wave" id="clipwave_${i}" height="30"></canvas>
+      <div class="clip-name" id="clipname_${i}">${clip ? clip.name : 'Empty — record a loop'}</div>
+      <div class="clip-controls">
+        <button class="clip-btn rec-btn${isRec ? ' recording' : ''}" onclick="toggleClipRec(${i})" title="${clipBars} bars">${isRec ? '■ STOP' : '⏺ REC'}</button>
+        ${clip ? `
+        <button class="clip-btn play-btn${isPlay ? ' playing' : ''}" onclick="toggleClipPlay(${i})">${isPlay ? '■' : '▶'}</button>
+        <button class="clip-btn stop-btn" onclick="stopClip(${i})" title="Stop">◼</button>
+        <button class="clip-btn" onclick="deleteClip(${i})" style="color:#600;border-color:#300">×</button>
+        ` : ''}
+      </div>
+      ${clip ? `
+      <div class="clip-length-row">
+        <label>Loop</label>
+        <input type="checkbox" ${clip.loop ? 'checked' : ''} onchange="setClipLoop(${i},this.checked)" style="accent-color:var(--green)">
+        <label style="margin-left:4px">Vol</label>
+        <input type="range" min="0" max="100" value="${Math.round((clip.vol||1)*100)}" style="flex:1;accent-color:var(--green)" oninput="setClipVol(${i},+this.value/100)">
+      </div>
+      ` : ''}
+    `;
+    el.appendChild(slot);
+
+    // Draw waveform if clip exists
+    if (clip) setTimeout(() => drawClipWave(i), 50);
+  }
+  document.getElementById('clipsCount').textContent = `${clips.filter(Boolean).length} / ${NUM_CLIPS}`;
+}
+
+function drawClipWave(i) {
+  const cvs = document.getElementById(`clipwave_${i}`);
+  if (!cvs || !clips[i]) return;
+  cvs.width = cvs.offsetWidth * 2 || 300;
+  const ctx = cvs.getContext('2d');
+  const data = clips[i].buf.getChannelData(0);
+  const step = Math.floor(data.length / cvs.width);
+  ctx.fillStyle = '#030308'; ctx.fillRect(0, 0, cvs.width, cvs.height);
+  // Color based on clip index
+  const colors = ['#c27a90','#887ECB','#6ABFC6','#C9D487','#9AE29B','#5CAB5E','#CB7E75','#A057A3'];
+  ctx.strokeStyle = colors[i % colors.length];
+  ctx.lineWidth = 1.5; ctx.beginPath();
+  for (let x = 0; x < cvs.width; x++) {
+    const v = (data[x * step] || 0) * 20;
+    const y = cvs.height / 2 + v;
+    x === 0 ? ctx.moveTo(0, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+}
+
+async function toggleClipRec(i) {
+  if (clipRecording === i) {
+    // Stop recording
+    await finishClipRec(i);
+  } else {
+    // Start recording this slot
+    if (clipRecording >= 0) await finishClipRec(clipRecording); // stop previous
+    await startClipRec(i);
+  }
+}
+
+async function startClipRec(i) {
+  ensureCtx();
+  if (actx.state === 'suspended') await actx.resume();
+  if (!isPlaying) { startPlay(); } // auto-start sequencer
+
+  clipRecording = i;
+  clipRecSamples = [];
+  // Calculate duration: bars * 4 beats * (60/bpm) seconds
+  const duration = clipBars * 4 * (60 / bpm);
+
+  // Capture via ScriptProcessor
+  const sg = actx.createGain(); sg.gain.value = 0; sg.connect(actx.destination);
+  clipRecProc = actx.createScriptProcessor(4096, 2, 2);
+  clipRecProc.onaudioprocess = e => {
+    if (clipRecording !== i) return;
+    const L = e.inputBuffer.getChannelData(0);
+    const R = e.inputBuffer.getChannelData(1);
+    const mono = new Float32Array(L.length);
+    for (let k = 0; k < L.length; k++) mono[k] = (L[k] + R[k]) * 0.5;
+    clipRecSamples.push(mono);
+  };
+  masterGain.connect(clipRecProc);
+  clipRecProc.connect(sg);
+
+  buildClipsGrid();
+
+  // Auto-stop after duration
+  setTimeout(() => {
+    if (clipRecording === i) finishClipRec(i);
+  }, duration * 1000 + 100);
+
+  // Visual countdown
+  const slot = document.getElementById(`clipslot_${i}`);
+  if (slot) {
+    slot.style.transition = `box-shadow ${duration}s linear`;
+  }
+}
+
+async function finishClipRec(i) {
+  if (clipRecProc) {
+    try { masterGain.disconnect(clipRecProc); } catch(e) {}
+    try { clipRecProc.disconnect(); } catch(e) {}
+    clipRecProc = null;
+  }
+
+  if (!clipRecSamples.length) { clipRecording = -1; buildClipsGrid(); return; }
+
+  // Assemble buffer
+  const sr = actx.sampleRate;
+  const totalLen = clipRecSamples.reduce((a, b) => a + b.length, 0);
+  const buf = actx.createBuffer(1, totalLen, sr);
+  const data = buf.getChannelData(0);
+  let offset = 0;
+  for (const chunk of clipRecSamples) { data.set(chunk, offset); offset += chunk.length; }
+
+  const duration = clipBars * 4 * (60 / bpm);
+  const name = `${clipBars}bar · ${bpm}bpm`;
+
+  clips[i] = { buf, name, vol: 1, loop: true, duration };
+  clipRecording = -1;
+  clipRecSamples = [];
+
+  buildClipsGrid();
+  // Auto-play the recorded clip
+  playClip(i);
+}
+
+function playClip(i) {
+  if (!clips[i] || !actx) return;
+  stopClip(i); // stop if already playing
+  ensureClipsGain();
+  const gainNode = actx.createGain();
+  gainNode.gain.value = (clips[i].vol || 1) * clipsVol;
+  gainNode.connect(clipsGainNode);
+  clipGains[i] = gainNode;
+  const src = actx.createBufferSource();
+  src.buffer = clips[i].buf;
+  src.loop = clips[i].loop !== false;
+  src.connect(gainNode);
+  src.start();
+  src.onended = () => { if (clipSrcs[i] === src) { clipSrcs[i] = null; buildClipsGrid(); } };
+  clipSrcs[i] = src;
+  buildClipsGrid();
+}
+
+function stopClip(i) {
+  if (clipSrcs[i]) { try { clipSrcs[i].stop(); } catch(e) {} clipSrcs[i] = null; }
+  if (clipGains[i]) { try { clipGains[i].disconnect(); } catch(e) {} clipGains[i] = null; }
+  buildClipsGrid();
+}
+
+function toggleClipPlay(i) {
+  if (clipSrcs[i]) stopClip(i);
+  else playClip(i);
+}
+
+function deleteClip(i) {
+  stopClip(i);
+  clips[i] = null;
+  buildClipsGrid();
+}
+
+function setClipLoop(i, val) {
+  if (clips[i]) { clips[i].loop = val; if (clipSrcs[i]) clipSrcs[i].loop = val; }
+}
+
+function setClipVol(i, val) {
+  if (clips[i]) { clips[i].vol = val; if (clipGains[i]) clipGains[i].gain.value = val * clipsVol; }
+}
+
+function stopAllClips() {
+  for (let i = 0; i < NUM_CLIPS; i++) stopClip(i);
+}
+
+async function exportAllClips() {
+  // Mix all active clips + sequencer to MP3
+  if (!recBlob && clips.every(c => !c)) { alert('Nothing recorded yet. Use REC or record clips first.'); return; }
+  toggleRec();
+}
+
+
 // ═══════════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════════
@@ -1221,6 +1512,7 @@ buildVirtualKeyboard();
 buildEQUI();
 drawBanner();
 refreshMusic();
+buildClipsGrid();
 // Animate club lights on load
 document.querySelectorAll('.light').forEach(l=>setTimeout(()=>l.style.opacity='1',500));
 </script>
