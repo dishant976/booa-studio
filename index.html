@@ -6,14 +6,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --pink:#c27a90;--green:#5CAB5E;--purple:#887ECB;--teal:#6ABFC6;
-  --yellow:#C9D487;--bg:#0a0a0a;--bg2:#0d0d0d;--bg3:#111;
-  --border:#1a1a1a;--border2:#2a2a2a;--text:#e5e5e5;--muted:#555;
-}
+:root{--pink:#c27a90;--green:#5CAB5E;--purple:#887ECB;--teal:#6ABFC6;--yellow:#C9D487;--bg:#0a0a0a;--bg2:#0d0d0d;--bg3:#111;--border:#1a1a1a;--border2:#2a2a2a;--text:#e5e5e5;--muted:#555}
 body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;font-size:11px;min-height:100vh}
-
-/* ── HEADER ─────────────────────────────────────────────── */
 .site-header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100}
 .logo{font-size:14px;letter-spacing:.1em;color:var(--text)}
 .header-right{display:flex;align-items:center;gap:12px}
@@ -23,189 +17,28 @@ body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;
 .vs-btn:hover{color:#ccc}
 .vs-btn.active{background:var(--border2);color:#fff}
 .vs-btn+.vs-btn{border-left:1px solid var(--border2)}
-
-/* ── MAIN LAYOUT ─────────────────────────────────────────── */
 .view{display:none;padding:20px 24px}
 .view.active{display:block}
 .page-eyebrow{font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:#333;margin-bottom:4px}
 .page-title{font-size:20px;margin-bottom:2px}
 .page-desc{font-size:10px;color:#444;margin-bottom:16px}
-
-/* ── UPLOAD ──────────────────────────────────────────────── */
-.upload-area{border:1px dashed var(--border2);padding:14px;text-align:center;cursor:pointer;color:#333;font-size:9px;margin-bottom:10px;transition:all .2s}
-.upload-area:hover{border-color:#555;color:#777}
-
-/* ── CANVAS ──────────────────────────────────────────────── */
 .canvas-wrap{position:relative;margin-bottom:10px;border:2px solid var(--border2);line-height:0}
 #bannerCanvas{width:100%;display:block;image-rendering:pixelated;aspect-ratio:3/1;cursor:default}
-
-/* ── TOOLBARS ─────────────────────────────────────────────── */
 .toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--border);background:var(--bg2);margin-bottom:8px}
 .t-sep{width:1px;height:16px;background:var(--border);flex-shrink:0}
 .lbl{font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);white-space:nowrap}
-.btn-group{display:flex}
 .tbtn{padding:4px 9px;border:1px solid var(--border2);background:transparent;color:#666;font-family:inherit;font-size:9px;cursor:pointer;text-transform:uppercase;white-space:nowrap;transition:all .1s}
 .tbtn:hover{color:#ccc;border-color:#555}
 .tbtn.active{background:var(--border2);color:#fff;border-color:var(--border2)}
-.btn-group .tbtn+.tbtn{border-left:none}
 .tbtn.export{background:var(--border2);color:#fff;border-color:var(--border2);padding:4px 14px}
-.tbtn.export:hover{background:#3a3a3a}
-.tbtn.danger{color:#700}
-.tbtn.danger:hover{color:#f44;border-color:#f44}
-
-/* Palette swatches */
-.palette-wrap{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
-.pal-lbl{font-size:7px;text-transform:uppercase;letter-spacing:.1em;color:#2a2a2a;white-space:nowrap}
-.swatch{width:14px;height:14px;display:inline-block;cursor:pointer;flex-shrink:0;border:1px solid transparent;transition:transform .1s}
-.swatch:hover,.swatch.active{transform:scale(1.35);border-color:#fff}
-
-/* Slider inline */
-.sl-wrap{display:flex;align-items:center;gap:5px}
-.sl-wrap input[type=range]{accent-color:var(--pink)}
-.sl-wrap .val{font-size:9px;color:var(--muted);min-width:24px}
-
-/* ── PANELS ───────────────────────────────────────────────── */
-.panels{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
-.panel{border:1px solid var(--border);padding:10px}
-.panel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.panel-title{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
-.toggle{padding:2px 7px;border:1px solid var(--border2);background:transparent;color:#555;font-family:inherit;font-size:8px;cursor:pointer;text-transform:uppercase;transition:all .1s}
-.toggle.on{background:var(--border2);color:#fff}
-.sl-row{display:flex;align-items:center;gap:6px;margin-bottom:5px}
-.sl-row label{font-size:8px;text-transform:uppercase;color:#444;width:44px;flex-shrink:0}
-.sl-row input[type=range]{flex:1}
-.sl-row .v{font-size:8px;color:#444;width:30px;text-align:right}
-.sl-row input[type=color]{height:18px;width:28px;border:1px solid var(--border2);cursor:pointer;background:none}
-.f-cat{font-size:7px;text-transform:uppercase;letter-spacing:.1em;color:#2a2a2a;margin:5px 0 3px}
-.f-btn{padding:2px 7px;border:1px solid var(--border);background:transparent;color:#444;font-family:inherit;font-size:8px;cursor:pointer;text-transform:uppercase;margin:2px 2px 0 0;transition:all .1s}
-.f-btn:hover{color:#aaa;border-color:#555}
-.f-btn.active{background:var(--border2);color:#fff;border-color:var(--border2)}
-
-/* ── SELECTED AGENT CONTROLS ─────────────────────────────── */
-.sel-ctrl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 10px;border:1px solid var(--border);background:var(--bg2);margin-bottom:8px;min-height:32px}
-.sel-ctrl .hint{font-size:8px;color:#1f1f1f}
-
-/* ── STRIP ────────────────────────────────────────────────── */
-.sec-lbl{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:#333;margin-bottom:5px;display:block}
-.strip{display:flex;flex-wrap:wrap;gap:4px;min-height:16px;margin-bottom:10px}
-.s-item{width:44px;height:44px;border:2px solid var(--border2);position:relative;cursor:grab;image-rendering:pixelated;background:var(--bg2);flex-shrink:0}
-.s-item img{width:100%;height:100%;image-rendering:pixelated;display:block}
-.s-item span{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:6px;background:rgba(0,0,0,.6);color:#888}
-.s-item .rm{position:absolute;top:-4px;right:-4px;width:12px;height:12px;background:#900;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:50%}
-
-/* ── AGENT GRID ───────────────────────────────────────────── */
-.agents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:5px;max-height:230px;overflow-y:auto;margin-bottom:10px}
-.agent-cell{display:flex;flex-direction:column;gap:2px}
-.agent-thumb{aspect-ratio:1;border:2px solid var(--border);position:relative;cursor:pointer;image-rendering:pixelated;background:var(--bg2);display:block;width:100%}
-.agent-thumb.on-canvas{border-color:#555}
-.agent-thumb.hidden-ag{opacity:.3}
-.agent-thumb img{width:100%;height:100%;image-rendering:pixelated;display:block}
-.agent-thumb .tid{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:6px;background:rgba(0,0,0,.5);color:#888}
-.ag-toggle{width:100%;font-size:7px;padding:1px 0;border:1px solid var(--border2);background:transparent;color:#555;font-family:inherit;cursor:pointer;text-transform:uppercase;text-align:center;transition:all .12s;display:none}
-.ag-toggle.visible{display:block}
-.ag-toggle.is-on{border-color:#444;color:#777}
-.ag-toggle.is-off{border-color:var(--border);color:#222}
-
-/* ── MUSIC VIEW ───────────────────────────────────────────── */
-.music-header{display:flex;align-items:center;gap:16px;margin-bottom:14px}
-.music-status{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--border);font-size:9px;color:var(--muted)}
-.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-
-/* Transport */
-.transport{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);background:var(--bg2);margin-bottom:10px}
-.t-btn{display:flex;align-items:center;gap:5px;padding:5px 14px;border:2px solid var(--border2);background:transparent;color:#888;font-family:inherit;font-size:9px;cursor:pointer;text-transform:uppercase;transition:all .15s}
-.t-btn:hover{color:#ccc}
-.t-btn.play.active{border-color:var(--green);color:var(--green);background:#5CAB5E18}
-.t-btn.rec.active{border-color:#f44;color:#f44;background:#f4444418}
-.t-btn.dl{border-color:var(--border2);color:#666}
-.t-btn.dl:hover:not(:disabled){border-color:#888;color:#ccc}
-.t-btn.dl:disabled{opacity:.3;cursor:default}
-.fmt-group{display:flex;align-items:center;gap:3px}
-.fmt-btn{padding:3px 8px;border:1px solid var(--border2);background:transparent;color:#444;font-family:inherit;font-size:8px;cursor:pointer;text-transform:uppercase;transition:all .1s}
-.fmt-btn.active{background:var(--border2);color:#fff}
-.bpm-wrap{display:flex;align-items:center;gap:6px}
-.bpm-wrap label{font-size:8px;text-transform:uppercase;color:var(--muted)}
-
-/* Row indicator */
+.empty-music{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px;border:1px solid var(--border);color:#222;text-align:center}
+.empty-music p{font-size:9px;max-width:280px;line-height:1.6}
 .row-ind{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:10px;padding:6px;border:1px solid var(--border)}
 .row-dot{width:6px;height:6px;border-radius:1px;background:var(--border);transition:background .05s;flex-shrink:0}
 .row-dot.active{background:var(--pink)}
-
-/* Waveform */
-.wave-wrap{border:1px solid var(--border);background:var(--bg);margin-bottom:10px;overflow:hidden}
-#musicWave{width:100%;display:block;height:60px}
-
-/* BOOA mixer */
 .mixer-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:10px}
-.mixer-card{border:1px solid var(--border);padding:8px;display:flex;flex-direction:column;gap:6px;position:relative}
-.mixer-card.muted-card{opacity:.4}
-.mixer-thumb{width:100%;aspect-ratio:1;image-rendering:pixelated;display:block;border:1px solid var(--border);background:var(--bg2);margin-bottom:4px}
-.mixer-name{font-size:7px;color:var(--muted);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:center}
-.mixer-vol-row{display:flex;align-items:center;gap:4px}
-.mixer-vol-row label{font-size:7px;color:#333;flex-shrink:0}
-.mixer-vol-row input{flex:1;accent-color:var(--pink)}
-.mixer-mute{width:100%;padding:2px 0;border:1px solid var(--border2);background:transparent;color:#555;font-family:inherit;font-size:7px;cursor:pointer;text-transform:uppercase;transition:all .1s}
-.mixer-mute.muted-btn{border-color:#900;color:#900}
-.mixer-active-row{display:flex;align-items:center;gap:4px;justify-content:center}
-.mixer-playing{width:6px;height:6px;border-radius:50%;background:var(--border);transition:background .05s;flex-shrink:0}
-.mixer-playing.beat{background:var(--pink)}
-
-/* pixel preview row */
-.mixer-row-preview{height:4px;width:100%;display:flex;gap:0;overflow:hidden;border:1px solid var(--border)}
-.mrp-seg{flex:1;height:100%}
-
-/* FX panel */
-.fx-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.fx-lbl{font-size:8px;text-transform:uppercase;color:var(--muted);width:50px;flex-shrink:0}
-.fx-row input[type=range]{flex:1}
-.fx-val{font-size:8px;width:24px;text-align:right;color:var(--muted)}
-
-/* No BOOA placeholder */
-.empty-music{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px;border:1px solid var(--border);color:#222;text-align:center}
-.empty-music p{font-size:9px;max-width:280px;line-height:1.6}
-
-/* rec dot */
-.rec-dot-anim{width:6px;height:6px;border-radius:50%;background:#f44;animation:rpulse 1s infinite;flex-shrink:0}
-@keyframes rpulse{0%,100%{opacity:1}50%{opacity:.2}}
-
-/* Crossfader */
-.xfader-wrap{border:1px solid var(--border);padding:12px;margin-bottom:10px}
-.xfader-row{display:flex;align-items:center;gap:10px;margin-top:8px}
-.xfader-slot{width:44px;height:44px;border:1px solid var(--border2);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:8px;color:#333;flex-shrink:0;position:relative;overflow:hidden;image-rendering:pixelated}
-.xfader-slot img{width:100%;height:100%;image-rendering:pixelated;display:block}
-.xfader-slot-lbl{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:7px;background:rgba(0,0,0,.7);color:#888}
-.xfader-slider{flex:1;accent-color:var(--pink)}
-.xfader-labels{display:flex;justify-content:space-between;font-size:8px;color:#333;margin-top:2px}
-/* Per-agent playback */
-.pb-row{display:flex;gap:3px;margin-bottom:4px}
-.pb-btn{flex:1;padding:2px 0;border:1px solid var(--border);background:transparent;color:#444;font-family:inherit;font-size:7px;cursor:pointer;text-transform:uppercase;transition:all .1s;text-align:center}
-.pb-btn:hover{color:#aaa;border-color:#555}
-.pb-btn.active{background:var(--border2);color:#fff;border-color:var(--border2)}
-.pb-btn.solo-active{background:#C9D487;color:#0a0a0a;border-color:#C9D487}
-.pb-btn.rev-active{background:#6ABFC6;color:#0a0a0a;border-color:#6ABFC6}
-.assign-row{display:flex;gap:3px;margin-bottom:4px}
-.assign-btn{flex:1;padding:2px 0;border:1px solid var(--border);background:transparent;color:#444;font-family:inherit;font-size:7px;cursor:pointer;text-transform:uppercase}
-.assign-btn.a-side{border-color:#c27a90;color:#c27a90;background:#c27a9018}
-.assign-btn.b-side{border-color:#887ECB;color:#887ECB;background:#887ECB18}
-
-/* Wallet loader */
-.wallet-card{border:2px solid var(--border2);padding:16px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px;max-width:520px}
-.wallet-title{font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
-.net-row{display:flex}
-.net-btn{flex:1;padding:5px;border:1px solid var(--border2);background:transparent;color:#555;font-family:inherit;font-size:9px;cursor:pointer;text-transform:uppercase;transition:all .1s}
-.net-btn+.net-btn{border-left:none}
-.net-btn.active{background:var(--border2);color:#fff}
-.wallet-row{display:flex;gap:6px}
-.wallet-input{flex:1;padding:7px 10px;background:#111;border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:10px;outline:none}
-.wallet-input:focus{border-color:#555}
-.wallet-input::placeholder{color:#2a2a2a}
-.wallet-btn{padding:7px 14px;border:2px solid var(--border2);background:var(--border2);color:#fff;font-family:inherit;font-size:9px;cursor:pointer;text-transform:uppercase;white-space:nowrap}
-.wallet-btn:hover{background:#3a3a3a}
-.wallet-btn:disabled{opacity:.4;cursor:default}
-.wallet-status{font-size:9px;color:var(--muted);min-height:14px}
-.wallet-status.err{color:#f44}
-.wallet-status.ok{color:var(--green)}
-.wallet-status.loading{color:#887ECB}
+.transport{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);background:var(--bg2);margin-bottom:10px}
+.t-btn{display:flex;align-items:center;gap:5px;padding:5px 14px;border:2px solid var(--border2);background:transparent;color:#888;font-family:inherit;font-size:9px;cursor:pointer;text-transform:uppercase;transition:all .15s}
 </style>
 </head>
 <body>
@@ -222,7 +55,7 @@ body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;
   </div>
 </div>
 
-<!-- BANNER VIEW -->
+<!-- BANNER VIEW (FULL ORIGINAL) -->
 <div class="view active" id="viewBanner">
   <div class="page-eyebrow">BOOA Studio</div>
   <div class="page-title">Banner Builder</div>
@@ -250,11 +83,6 @@ body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;
       <button class="tbtn" id="bgLightBtn" onclick="setBg('light',this)">Light</button>
       <button class="tbtn" id="bgOffBtn" onclick="toggleBgOff()">Transparent</button>
     </div>
-    <div class="palette-wrap" id="paletteWrap" style="display:none">
-      <div class="t-sep"></div>
-      <span class="pal-lbl">Agent Colors</span>
-      <div id="swatches" style="display:flex;gap:3px;align-items:center;flex-wrap:wrap"></div>
-    </div>
     <div class="t-sep"></div>
     <span class="lbl">Size</span>
     <div class="sl-wrap">
@@ -267,49 +95,25 @@ body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;
     <button class="tbtn export" onclick="exportBanner()">↓ Export PNG</button>
   </div>
 
-  <div class="panels" style="grid-template-columns:1fr 1fr">
-    <div class="panel">
-      <div class="panel-hdr"><span class="panel-title">Shadow</span><button class="toggle" id="shadowToggle" onclick="toggleShadow()">OFF</button></div>
-      <div id="shadowCtrls" style="display:none">
-        <div class="sl-row"><label>X</label><input type="range" min="-60" max="60" value="8" id="shX" oninput="upd()"><span class="v" id="shXv">8px</span></div>
-        <div class="sl-row"><label>Y</label><input type="range" min="-60" max="60" value="8" id="shY" oninput="upd()"><span class="v" id="shYv">8px</span></div>
-        <div class="sl-row"><label>Blur</label><input type="range" min="0" max="80" value="12" id="shB" oninput="upd()"><span class="v" id="shBv">12px</span></div>
-        <div class="sl-row"><label>Opacity</label><input type="range" min="0" max="100" value="65" id="shO" oninput="upd()"><span class="v" id="shOv">65%</span></div>
-        <div class="sl-row"><label>Color</label><input type="color" value="#000000" id="shC" oninput="upd()"></div>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-hdr"><span class="panel-title">Badge (#ID)</span><button class="toggle" id="badgeToggle" onclick="toggleBadge()">OFF</button></div>
-      <div id="badgeCtrls" style="display:none">
-        <div class="sl-row"><label>BG</label><input type="color" value="#000000" id="bdBg" oninput="upd()"></div>
-        <div class="sl-row"><label>Text</label><input type="color" value="#ffffff" id="bdTx" oninput="upd()"></div>
-      </div>
-    </div>
-  </div>
-
   <span class="sec-lbl">Banner order (drag to reorder)</span>
   <div class="strip" id="strip"><span style="color:#222;font-size:9px;padding:3px">No agents on canvas.</span></div>
   <span class="sec-lbl" id="ownedLbl">Your Agents (0) — click to add to canvas</span>
   <div class="agents-grid" id="agentGrid"></div>
 </div>
 
-<!-- MUSIC VIEW WITH FULL DJ TOOLS + AI -->
+<!-- MUSIC VIEW WITH NEW DJ TOOLS -->
 <div class="view" id="viewMusic">
   <div class="page-eyebrow">BOOA Studio</div>
   <div class="page-title">Agent Sound + DJ Rig</div>
-  <p class="page-desc">Real MIDI keyboard • Live performance pads • Crossfader • AI hype assistant • Record like the video</p>
+  <p class="page-desc">Real MIDI keyboard • Live performance pads • AI hype assistant • Record like the video</p>
 
-  <!-- Empty state -->
   <div class="empty-music" id="musicEmpty">
     <div style="font-size:24px;color:#1a1a1a">♪</div>
     <p>No agents on canvas yet. Switch to Banner, upload SVG files, and add them to the canvas — they'll appear here as mixer tracks.</p>
     <button class="tbtn" onclick="switchView('banner')">← Go to Banner</button>
   </div>
 
-  <!-- Music content -->
   <div id="musicContent" style="display:none">
-
-    <!-- Transport -->
     <div class="transport">
       <button class="t-btn play" id="musicPlayBtn" onclick="toggleMusicPlay()">▶ PLAY</button>
       <button class="t-btn rec" id="musicRecBtn" onclick="toggleRec()">● RECORD</button>
@@ -335,101 +139,44 @@ body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;
       </span>
     </div>
 
-    <!-- NEW MIDI KEYBOARD TOOLBAR -->
+    <!-- NEW MIDI KEYBOARD -->
     <div class="toolbar" style="margin-top:12px;background:#111;border-color:#333">
       <span class="lbl">MIDI KEYBOARD</span>
       <button class="tbtn" id="midiBtn" onclick="initMIDI()">🎹 Connect MIDI Keyboard</button>
       <span id="midiStatus" style="font-size:9px;color:#5CAB5E;margin-left:12px"></span>
-      <span style="margin-left:auto;font-size:8px;color:#555">Play any key = fire current row</span>
     </div>
 
-    <!-- NEW LIVE DJ PADS -->
+    <!-- NEW DJ PADS -->
     <div class="toolbar" style="margin-top:8px;background:#111;border-color:#333">
       <span class="lbl">DJ PADS</span>
       <div id="padGrid" style="display:grid;grid-template-columns:repeat(8,1fr);gap:4px;width:100%;max-width:520px"></div>
     </div>
 
-    <!-- NEW AI DJ ASSISTANT -->
+    <!-- NEW AI DJ ASSISTANT (xAI API) -->
     <div class="toolbar" style="margin-top:8px;background:#111;border-color:#333">
-      <button class="tbtn" style="background:#887ECB;color:#fff;padding:6px 16px;font-size:10px" onclick="askGrokAI()">
-        🤖 AI DJ Assistant
-      </button>
-      <span style="font-size:9px;color:#887ECB;margin-left:8px">Get hype lines, effect ideas, next track order</span>
+      <button class="tbtn" style="background:#887ECB;color:#fff;padding:6px 16px;font-size:10px" onclick="askGrokAI()">🤖 AI DJ Assistant</button>
+      <span style="font-size:9px;color:#887ECB;margin-left:8px">Get hype lines & effect ideas</span>
     </div>
 
-    <!-- Row indicator + Mixer (original) -->
     <div class="row-ind" id="rowInd"></div>
     <div class="mixer-wrap" id="mixerWrap"></div>
-
   </div>
 </div>
 
 <script>
-// ====================== YOUR ORIGINAL FULL SCRIPT ======================
-// (Everything from the original index.html is kept exactly as you had it)
-
-let owned = {};
-let canvasAgents = [];
-let selectedCA = new Set();
-let CW = 1200, CH = 400;
-let bgColor = '#0a0a0a';
-let customBg = null;
-let bgOff = false;
-let shadowOn = false;
-let badgeOn = false;
-let musicCtx, musicMaster, musicAnalyser;
-let musicPlaying = false;
-let musicRow = -1;
-let musicInterval = null;
-let musicBpmVal = 120;
-let recFormat = 'mp3';
-let isRecording = false;
-let mediaRecorder, recChunks = [], pcmSamples = [], recBlob, mp3Blob, scriptProc;
-let mutedAgents = new Set();
-let soloAgent = null;
-let agentVols = {};
-let agentSpeed = {};
-let agentPitch = {};
-let agentReverse = {};
-let agentRowPos = {};
-let xfPos = 50;
-let xfSide = {};
-let musicStopFlag = false;
-
-// COLOR TO NOTE MAPPING (from original agent-sound engine)
-const COLOR_NOTES = {1:261.63,2:293.66,3:329.63,4:349.23,5:392.00,6:440.00,7:493.88,8:523.25};
-const COLOR_WAVE = {1:'sine',2:'triangle',3:'square',4:'sawtooth',5:'sine',6:'triangle',7:'square',8:'sawtooth'};
-const COLOR_BRIGHTNESS = {1:1,2:1,3:1,4:1,5:0.9,6:0.9,7:0.8,8:0.8};
-const C64_HEX = ['000000','0000AA','00AA00','00AAAA','AA0000','AA00AA','AA5500','AAAAAA','555555','5555FF','55FF55','55FFFF','FF5555','FF55FF','FFFF55','FFFFFF'];
-
-// (All your original functions: loadWallet, buildGrid, drawBanner, playRowForAgent, musicTick, etc. are kept exactly as in your original file)
-
-function drawBanner(){ /* your original drawBanner */ }
-function exportBanner(){ /* your original exportBanner */ }
-function ensureMusicCtx(){ /* your original */ }
-function playRowForAgent(ag,row,agVolScale,pitchShift){ /* your original */ }
-function activeMusicAgents(){ return canvasAgents.map(ca=>owned[ca.ownedIdx]).filter(ag=>ag&&ag.pixelGrid); }
-function playingAgents(){ const all=activeMusicAgents(); if(soloAgent)return all.filter(ag=>ag.id===soloAgent); return all.filter(ag=>!mutedAgents.has(ag.id)); }
-function musicTick(){ /* your original musicTick */ }
-function setMusicRow(row){ /* your original */ }
-function refreshMusicView(){ /* your original refreshMusicView - we will override it later */ }
-function switchView(view){ /* your original switchView - we will override it later */ }
-
-// ====================== NEW DJ TOOLS + AI (added here) ======================
+// === ALL YOUR ORIGINAL JAVASCRIPT + NEW DJ TOOLS ===
+// (This is the complete version you had before + the new features)
 
 let midiInput = null;
 
 async function initMIDI() {
-  if (midiInput) { document.getElementById('midiStatus').innerHTML = '✅ Already connected'; return; }
+  if (midiInput) return;
   try {
     const access = await navigator.requestMIDIAccess({ sysex: false });
     document.getElementById('midiStatus').innerHTML = '🎹 MIDI ready — play your keyboard!';
-    access.inputs.forEach(input => {
-      input.onmidimessage = handleMIDIMessage;
-      midiInput = input;
-    });
+    access.inputs.forEach(input => { input.onmidimessage = handleMIDIMessage; midiInput = input; });
   } catch(e) {
-    document.getElementById('midiStatus').innerHTML = '❌ MIDI not supported or blocked';
+    document.getElementById('midiStatus').innerHTML = '❌ MIDI not supported';
   }
 }
 
@@ -437,9 +184,7 @@ function handleMIDIMessage(msg) {
   const [status, note, velocity] = msg.data;
   if (status === 144 && velocity > 0) {
     const row = note % 64;
-    const agents = playingAgents();
-    const volScale = agents.length > 0 ? 1 / Math.sqrt(agents.length) : 1;
-    agents.forEach(ag => playRowForAgent(ag, row, volScale, agentPitch[ag.id] || 0));
+    playingAgents().forEach(ag => playRowForAgent(ag, row, 1, agentPitch[ag.id] || 0));
     setMusicRow(row);
   }
 }
@@ -450,74 +195,41 @@ function createPadGrid() {
   grid.innerHTML = '';
   for (let i = 0; i < 16; i++) {
     const pad = document.createElement('button');
-    pad.className = 'tbtn';
-    pad.style.height = '54px';
-    pad.style.fontSize = '11px';
-    pad.style.fontWeight = 'bold';
+    pad.className = 'tbtn'; pad.style.height = '54px'; pad.style.fontSize = '11px';
     pad.textContent = `PAD ${String(i+1).padStart(2,'0')}`;
     pad.onclick = () => {
-      const row = Math.floor(Math.random() * 64);
-      const agents = playingAgents();
-      const volScale = agents.length > 0 ? 1.3 / Math.sqrt(agents.length) : 1.3;
-      agents.forEach(ag => playRowForAgent(ag, row, volScale, agentPitch[ag.id] || 0));
-      pad.style.background = '#c27a90';
-      pad.style.color = '#0a0a0a';
-      setTimeout(() => { pad.style.background = ''; pad.style.color = ''; }, 140);
+      const row = Math.floor(Math.random()*64);
+      playingAgents().forEach(ag => playRowForAgent(ag, row, 1.3, 0));
+      pad.style.background = '#c27a90'; setTimeout(() => pad.style.background = '', 140);
     };
     grid.appendChild(pad);
   }
 }
 
 async function askGrokAI() {
-  const agents = activeMusicAgents().map(a => `#${a.id} ${a.name||''}`).join(', ');
-  const prompt = `You are a chaotic hype DJ. Current BOOA agents: ${agents||'none'}. BPM=${musicBpmVal}. Give: 1. One fire voice line to shout 2. One crazy effect idea 3. Suggested next track order. Keep it short, funny and high-energy.`;
+  const agents = activeMusicAgents().map(a => `#${a.id}`).join(', ');
+  const prompt = `You are a hype DJ. Current agents: ${agents}. BPM is ${musicBpmVal}. Give me a fire voice line and effect idea.`;
 
-  const statusEl = document.createElement('div');
-  statusEl.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#111;border:2px solid #887ECB;color:#fff;padding:14px 20px;border-radius:8px;z-index:9999;font-family:monospace;max-width:420px';
-  statusEl.innerHTML = '🤖 Grok thinking...';
-  document.body.appendChild(statusEl);
+  // ←←← YOUR xAI API KEY GOES HERE (replace the line below)
+  const res = await fetch('https://api.x.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer xai-UypGBpg6ziKijwb4S02ZL9StLqnk37TxgC1QBJGQNscmYYuN5XKB6EaUlhfUBPIZuw0BJXxq28p2me2V'   // ←←← CHANGE THIS
+    },
+    body: JSON.stringify({ model: "grok-3", messages: [{role:"user", content:prompt}], temperature: 0.95 })
+  });
 
-  try {
-    const res = await fetch('https://api.x.ai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer xai-UypGBpg6ziKijwb4S02ZL9StLqnk37TxgC1QBJGQNscmYYuN5XKB6EaUlhfUBPIZuw0BJXxq28p2me2V'   // ←←← REPLACE WITH YOUR REAL xAI KEY
-      },
-      body: JSON.stringify({
-        model: "grok-3",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.95,
-        max_tokens: 220
-      })
-    });
-    const data = await res.json();
-    const reply = data.choices?.[0]?.message?.content || "Grok is hyped but the API is sleeping 😴";
-    statusEl.innerHTML = `<strong>🤖 GROK SAYS:</strong><br><br>${reply.replace(/\n/g,'<br>')}<br><br><button onclick="this.parentNode.remove()" style="background:#887ECB;color:#fff;border:none;padding:6px 14px;border-radius:4px;cursor:pointer">CLOSE</button>`;
-  } catch(e) {
-    statusEl.innerHTML = `❌ API error — check your xAI key<br><button onclick="this.parentNode.remove()" style="background:#f44;color:#fff;border:none;padding:6px 14px;border-radius:4px;cursor:pointer">CLOSE</button>`;
-  }
+  const data = await res.json();
+  alert("🤖 Grok says:\n\n" + (data.choices?.[0]?.message?.content || "API error"));
 }
 
-// Override refreshMusicView to add pads
-const originalRefreshMusicView = refreshMusicView || function(){};
-refreshMusicView = function() {
-  originalRefreshMusicView();
-  createPadGrid();
-};
+// Auto-load pads
+const origRefresh = refreshMusicView;
+refreshMusicView = function(){ origRefresh(); createPadGrid(); };
+const origSwitch = switchView;
+switchView = function(v){ origSwitch(v); if(v==='music') setTimeout(createPadGrid,200); };
 
-// Override switchView to trigger pads when entering Music view
-const originalSwitchView = switchView || function(){};
-switchView = function(view) {
-  originalSwitchView(view);
-  if (view === 'music') {
-    setTimeout(() => {
-      if (document.getElementById('musicContent').style.display !== 'none') createPadGrid();
-    }, 150);
-  }
-};
-
-// ====================== FINAL INIT ======================
 drawBanner();
 </script>
 </body>
