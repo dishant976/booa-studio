@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>BOOA Studio — Banner + Music</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pink:#c27a90;--green:#5CAB5E;--purple:#887ECB;--teal:#6ABFC6;
+  --yellow:#C9D487;--bg:#0a0a0a;--bg2:#0d0d0d;--bg3:#111;
+  --border:#1a1a1a;--border2:#2a2a2a;--text:#e5e5e5;--muted:#555;
+}
+body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;font-size:11px;min-height:100vh}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.site-header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100}
+.logo{font-size:14px;letter-spacing:.1em;color:var(--text)}
+.header-right{display:flex;align-items:center;gap:12px}
+.view-switcher{display:flex;align-items:center;border:1px solid var(--border2)}
+.view-lbl{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:#333;padding:0 8px;border-right:1px solid var(--border2)}
+.vs-btn{padding:5px 12px;border:none;background:transparent;color:#555;font-family:inherit;font-size:9px;cursor:pointer;text-transform:uppercase;letter-spacing:.05em;transition:all .15s}
+.vs-btn:hover{color:#ccc}
+.vs-btn.active{background:var(--border2);color:#fff}
+.vs-btn+.vs-btn{border-left:1px solid var(--border2)}
+
+/* ── MAIN LAYOUT ─────────────────────────────────────────── */
+.view{display:none;padding:20px 24px}
+.view.active{display:block}
+.page-eyebrow{font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:#333;margin-bottom:4px}
+.page-title{font-size:20px;margin-bottom:2px}
+.page-desc{font-size:10px;color:#444;margin-bottom:16px}
+
+/* ── UPLOAD ──────────────────────────────────────────────── */
+.upload-area{border:1px dashed var(--border2);padding:14px;text-align:center;cursor:pointer;color:#333;font-size:9px;margin-bottom:10px;transition:all .2s}
+.upload-area:hover{border-color:#555;color:#777}
+
+/* ── CANVAS ──────────────────────────────────────────────── */
+.canvas-wrap{position:relative;margin-bottom:10px;border:2px solid var(--border2);line-height:0}
+#bannerCanvas{width:100%;display:block;image-rendering:pixelated;aspect-ratio:3/1;cursor:default}
+
+/* ── TOOLBARS ─────────────────────────────────────────────── */
+.toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--border);background:var(--bg2);margin-bottom:8px}
+.t-sep{width:1px;height:16px;background:var(--border);flex-shrink:0}
+.lbl{font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);white-space:nowrap}
+.btn-group{display:flex}
+.tbtn{padding:4px 9px;border:1px solid var(--border2);background:transparent;color:#666;font-family:inherit;font-size:9px;cursor:pointer;text-transform:uppercase;white-space:nowrap;transition:all .1s}
+.tbtn:hover{color:#ccc;border-color:#555}
+.tbtn.active{background:var(--border2);color:#fff;border-color:var(--border2)}
+.btn-group .tbtn+.tbtn{border-left:none}
+.tbtn.export{background:var(--border2);color:#fff;border-color:var(--border2);padding:4px 14px}
+.tbtn.export:hover{background:#3a3a3a}
+.tbtn.danger{color:#700}
+.tbtn.danger:hover{color:#f44;border-color:#f44}
+
+/* Palette swatches */
+.palette-wrap{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.pal-lbl{font-size:7px;text-transform:uppercase;letter-spacing:.1em;color:#2a2a2a;white-space:nowrap}
+.swatch{width:14px;height:14px;display:inline-block;cursor:pointer;flex-shrink:0;border:1px solid transparent;transition:transform .1s}
+.swatch:hover,.swatch.active{transform:scale(1.35);border-color:#fff}
+
+/* Slider inline */
+.sl-wrap{display:flex;align-items:center;gap:5px}
+.sl-wrap input[type=range]{accent-color:var(--pink)}
+.sl-wrap .val{font-size:9px;color:var(--muted);min-width:24px}
+
+/* ── PANELS ───────────────────────────────────────────────── */
+.panels{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.panel{border:1px solid var(--border);padding:10px}
+.panel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.panel-title{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.toggle{padding:2px 7px;border:1px solid var(--border2);background:transparent;color:#555;font-family:inherit;font-size:8px;cursor:pointer;text-transform:uppercase;transition:all .1s}
+.toggle.on{background:var(--border2);color:#fff}
+.sl-row{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.sl-row label{font-size:8px;text-transform:uppercase;color:#444;width:44px;flex-shrink:0}
+.sl-row input[type=range]{flex:1}
+.sl-row .v{font-size:8px;color:#444;width:30px;text-align:right}
+.sl-row input[type=color]{height:18px;width:28px;border:1px solid var(--border2);cursor:pointer;background:none}
+.f-cat{font-size:7px;text-transform:uppercase;letter-spacing:.1em;color:#2a2a2a;margin:5px 0 3px}
+.f-btn{padding:2px 7px;border:1px solid var(--border);background:transparent;color:#444;font-family:inherit;font-size:8px;cursor:pointer;text-transform:uppercase;margin:2px 2px 0 0;transition:all .1s}
+.f-btn:hover{color:#aaa;border-color:#555}
+.f-btn.active{background:var(--border2);color:#fff;border-color:var(--border2)}
+
+/* ── SELECTED AGENT CONTROLS ─────────────────────────────── */
+.sel-ctrl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 10px;border:1px solid var(--border);background:var(--bg2);margin-bottom:8px;min-height:32px}
+.sel-ctrl .hint{font-size:8px;color:#1f1f1f}
+
+/* ── STRIP ────────────────────────────────────────────────── */
+.sec-lbl{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:#333;margin-bottom:5px;display:block}
+.strip{display:flex;flex-wrap:wrap;gap:4px;min-height:16px;margin-bottom:10px}
+.s-item{width:44px;height:44px;border:2px solid var(--border2);position:relative;cursor:grab;image-rendering:pixelated;background:var(--bg2);flex-shrink:0}
+.s-item img{width:100%;height:100%;image-rendering:pixelated;display:block}
+.s-item span{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:6px;background:rgba(0,0,0,.6);color:#888}
+.s-item .rm{position:absolute;top:-4px;right:-4px;width:12px;height:12px;background:#900;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:50%}
+
+/* ── AGENT GRID ───────────────────────────────────────────── */
+.agents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:5px;max-height:230px;overflow-y:auto;margin-bottom:10px}
+.agent-cell{display:flex;flex-direction:column;gap:2px}
+.agent-thumb{aspect-ratio:1;border:2px solid var(--border);position:relative;cursor:pointer;image-rendering:pixelated;background:var(--bg2);display:block;width:100%}
+.agent-thumb.on-canvas{border-color:#555}
+.agent-thumb.hidden-ag{opacity:.3}
+.agent-thumb img{width:100%;height:100%;image-rendering:pixelated;display:block}
+.agent-thumb .tid{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:6px;background:rgba(0,0,0,.5);color:#888}
+.ag-toggle{width:100%;font-size:7px;padding:1px 0;border:1px solid var(--border2);background:transparent;color:#555;font-family:inherit;cursor:pointer;text-transform:uppercase;text-align:center;transition:all .12s;display:none}
+.ag-toggle.visible{display:block}
+.ag-toggle.is-on{border-color:#444;color:#777}
+.ag-toggle.is-off{border-color:var(--border);color:#222}
+
+/* ── MUSIC VIEW ───────────────────────────────────────────── */
+.music-header{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.music-status{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--border);font-size:9px;color:var(--muted)}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* Transport */
+.transport{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);background:var(--bg2);margin-bottom:10px}
+.t-btn{display:flex;align-items:center;gap:5px;padding:5px 14px;border:2px solid var(--border2);background:transparent;color:#888;font-family:inherit;font-size:9px;cursor:pointer;text-transform:uppercase;transition:all .15s}
+.t-btn:hover{color:#ccc}
+.t-btn.play.active{border-color:var(--green);color:var(--green);background:#5CAB5E18}
+.t-btn.rec.active{border-color:#f44;color:#f44;background:#f4444418}
+.t-btn.dl{border-color:var(--border2);color:#666}
+.t-btn.dl:hover:not(:disabled){border-color:#888;color:#ccc}
+.t-btn.dl:disabled{opacity:.3;cursor:default}
+.fmt-group{display:flex;align-items:center;gap:3px}
+.fmt-btn{padding:3px 8px;border:1px solid var(--border2);background:transparent;color:#444;font-family:inherit;font-size:8px;cursor:pointer;text-transform:uppercase;transition:all .1s}
+.fmt-btn.active{background:var(--border2);color:#fff}
+.bpm-wrap{display:flex;align-items:center;gap:6px}
+.bpm-wrap label{font-size:8px;text-transform:uppercase;color:var(--muted)}
+
+/* Row indicator */
+.row-ind{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:10px;padding:6px;border:1px solid var(--border)}
+.row-dot{width:6px;height:6px;border-radius:1px;background:var(--border);transition:background .05s;flex-shrink:0}
+.row-dot.active{background:var(--pink)}
+
+/* Waveform */
+.wave-wrap{border:1px solid var(--border);background:var(--bg);margin-bottom:10px;overflow:hidden}
+#musicWave{width:100%;display:block;height:60px}
+
+/* BOOA mixer */
+.mixer-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:10px}
+.mixer-card{border:1px solid var(--border);padding:8px;display:flex;flex-direction:column;gap:6px;position:relative}
+.mixer-card.muted-card{opacity:.4}
+.mixer-thumb{width:100%;aspect-ratio:1;image-rendering:pixelated;display:block;border:1px solid var(--border);background:var(--bg2);margin-bottom:4px}
+.mixer-name{font-size:7px;color:var(--muted);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:center}
+.mixer-vol-row{display:flex;align-items:center;gap:4px}
+.mixer-vol-row label{font-size:7px;color:#333;flex-shrink:0}
+.mixer-vol-row input{flex:1;accent-color:var(--pink)}
+.mixer-mute{width:100%;padding:2px 0;border:1px solid var(--border2);background:transparent;color:#555;font-family:inherit;font-size:7px;cursor:pointer;text-transform:uppercase;transition:all .1s}
+.mixer-mute.muted-btn{border-color:#900;color:#900}
+.mixer-active-row{display:flex;align-items:center;gap:4px;justify-content:center}
+.mixer-playing{width:6px;height:6px;border-radius:50%;background:var(--border);transition:background .05s;flex-shrink:0}
+.mixer-playing.beat{background:var(--pink)}
+
+/* pixel preview row */
+.mixer-row-preview{height:4px;width:100%;display:flex;gap:0;overflow:hidden;border:1px solid var(--border)}
+.mrp-seg{flex:1;height:100%}
+
+/* FX panel */
+.fx-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.fx-lbl{font-size:8px;text-transform:uppercase;color:var(--muted);width:50px;flex-shrink:0}
+.fx-row input[type=range]{flex:1}
+.fx-val{font-size:8px;width:24px;text-align:right;color:var(--muted)}
+
+/* No BOOA placeholder */
+.empty-music{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px;border:1px solid var(--border);color:#222;text-align:center}
+.empty-music p{font-size:9px;max-width:280px;line-height:1.6}
+
+/* rec dot */
+.rec-dot-anim{width:6px;height:6px;border-radius:50%;background:#f44;animation:rpulse 1s infinite;flex-shrink:0}
+@keyframes rpulse{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* Crossfader */
+.xfader-wrap{border:1px solid var(--border);padding:12px;margin-bottom:10px}
+.xfader-row{display:flex;align-items:center;gap:10px;margin-top:8px}
+.xfader-slot{width:44px;height:44px;border:1px solid var(--border2);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:8px;color:#333;flex-shrink:0;position:relative;overflow:hidden;image-rendering:pixelated}
+.xfader-slot img{width:100%;height:100%;image-rendering:pixelated;display:block}
+.xfader-slot-lbl{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:7px;background:rgba(0,0,0,.7);color:#888}
+.xfader-slider{flex:1;accent-color:var(--pink)}
+.xfader-labels{display:flex;justify-content:space-between;font-size:8px;color:#333;margin-top:2px}
+/* Per-agent playback */
+.pb-row{display:flex;gap:3px;margin-bottom:4px}
+.pb-btn{flex:1;padding:2px 0;border:1px solid var(--border);background:transparent;color:#444;font-family:inherit;font-size:7px;cursor:pointer;text-transform:uppercase;transition:all .1s;text-align:center}
+.pb-btn:hover{color:#aaa;border-color:#555}
+.pb-btn.active{background:var(--border2);color:#fff;border-color:var(--border2)}
+.pb-btn.solo-active{background:#C9D487;color:#0a0a0a;border-color:#C9D487}
+.pb-btn.rev-active{background:#6ABFC6;color:#0a0a0a;border-color:#6ABFC6}
+.assign-row{display:flex;gap:3px;margin-bottom:4px}
+.assign-btn{flex:1;padding:2px 0;border:1px solid var(--border);background:transparent;color:#444;font-family:inherit;font-size:7px;cursor:pointer;text-transform:uppercase}
+.assign-btn.a-side{border-color:#c27a90;color:#c27a90;background:#c27a9018}
+.assign-btn.b-side{border-color:#887ECB;color:#887ECB;background:#887ECB18}
+
+/* Wallet loader */
+.wallet-card{border:2px solid var(--border2);padding:16px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px;max-width:520px}
+.wallet-title{font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.net-row{display:flex}
+.net-btn{flex:1;padding:5px;border:1px solid var(--border2);background:transparent;color:#555;font-family:inherit;font-size:9px;cursor:pointer;text-transform:uppercase;transition:all .1s}
+.net-btn+.net-btn{border-left:none}
+.net-btn.active{background:var(--border2);color:#fff}
+.wallet-row{display:flex;gap:6px}
+.wallet-input{flex:1;padding:7px 10px;background:#111;border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:10px;outline:none}
+.wallet-input:focus{border-color:#555}
+.wallet-input::placeholder{color:#2a2a2a}
+.wallet-btn{padding:7px 14px;border:2px solid var(--border2);background:var(--border2);color:#fff;font-family:inherit;font-size:9px;cursor:pointer;text-transform:uppercase;white-space:nowrap}
+.wallet-btn:hover{background:#3a3a3a}
+.wallet-btn:disabled{opacity:.4;cursor:default}
+.wallet-status{font-size:9px;color:var(--muted);min-height:14px}
+.wallet-status.err{color:#f44}
+.wallet-status.ok{color:var(--green)}
+.wallet-status.loading{color:#887ECB}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════════════════════ -->
+<div class="site-header">
+  <span class="logo">KHÔRA</span>
+  <div class="header-right">
+    <div class="view-switcher">
+      <span class="view-lbl">Edit</span>
+      <button class="vs-btn active" id="vsBanner" onclick="switchView('banner')">Banner</button>
+      <button class="vs-btn" id="vsMusic" onclick="switchView('music')">Music</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     BANNER VIEW
+════════════════════════════════════════════════════════════ -->
+<div class="view active" id="viewBanner">
+  <div class="page-eyebrow">BOOA Studio</div>
+  <div class="page-title">Banner Builder</div>
+  <p class="page-desc">Enter your wallet · all your BOOA load automatically · drag freely on canvas · export PNG · switch to Music to hear them</p>
+
+  <div class="wallet-card">
+    <div class="wallet-title">Load your BOOA agents from wallet</div><div class="wallet-row">
+      <input class="wallet-input" id="walletAddr" placeholder="0x... wallet address" onkeydown="if(event.key==='Enter')loadWallet()"/>
+      <button class="wallet-btn" id="walletBtn" onclick="loadWallet()">Load Agents</button>
+    </div>
+    <div class="wallet-status" id="walletStatus">Enter your wallet address above</div>
+  </div>
+
+  <div class="canvas-wrap"><canvas id="bannerCanvas"></canvas></div>
+
+  <!-- Selected agent context bar -->
+  <div class="sel-ctrl" id="selCtrl">
+    <span class="hint">Click an agent on the canvas to select · drag to move · resize handle = bottom-right corner</span>
+  </div>
+
+  <!-- Main toolbar -->
+  <div class="toolbar">
+    <span class="lbl">BG</span>
+    <div class="btn-group">
+      <button class="tbtn active" id="bgDarkBtn" onclick="setBg('dark',this)">Dark</button>
+      <button class="tbtn" id="bgLightBtn" onclick="setBg('light',this)">Light</button>
+      <button class="tbtn" id="bgOffBtn" onclick="toggleBgOff()">Transparent</button>
+    </div>
+    <div class="palette-wrap" id="paletteWrap" style="display:none">
+      <div class="t-sep"></div>
+      <span class="pal-lbl">Agent Colors</span>
+      <div id="swatches" style="display:flex;gap:3px;align-items:center;flex-wrap:wrap"></div>
+    </div>
+    <div class="t-sep"></div>
+    <span class="lbl">Size</span>
+    <div class="sl-wrap">
+      <input type="range" min="20" max="500" value="200" id="gsizeSlider" oninput="applyGlobalSize(this.value)" style="width:80px">
+      <span class="val" id="gsizeV">200</span>
+    </div>
+    <div class="t-sep"></div>
+    <span id="canvasCount" style="font-size:8px;color:#2a2a2a">0 on canvas</span>
+    <button class="tbtn" onclick="clearCanvas()">Clear</button>
+    <button class="tbtn export" onclick="exportBanner()">↓ Export PNG</button>
+  </div>
+
+  <!-- Advanced panels -->
+  <div class="panels" style="grid-template-columns:1fr 1fr">
+  <div class="panel">
+      <div class="panel-hdr"><span class="panel-title">Shadow</span><button class="toggle" id="shadowToggle" onclick="toggleShadow()">OFF</button></div>
+      <div id="shadowCtrls" style="display:none">
+        <div class="sl-row"><label>X</label><input type="range" min="-60" max="60" value="8" id="shX" oninput="upd()"><span class="v" id="shXv">8px</span></div>
+        <div class="sl-row"><label>Y</label><input type="range" min="-60" max="60" value="8" id="shY" oninput="upd()"><span class="v" id="shYv">8px</span></div>
+        <div class="sl-row"><label>Blur</label><input type="range" min="0" max="80" value="12" id="shB" oninput="upd()"><span class="v" id="shBv">12px</span></div>
+        <div class="sl-row"><label>Opacity</label><input type="range" min="0" max="100" value="65" id="shO" oninput="upd()"><span class="v" id="shOv">65%</span></div>
+        <div class="sl-row"><label>Color</label><input type="color" value="#000000" id="shC" oninput="upd()"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-hdr"><span class="panel-title">Badge (#ID)</span><button class="toggle" id="badgeToggle" onclick="toggleBadge()">OFF</button></div>
+      <div id="badgeCtrls" style="display:none">
+        <div class="sl-row"><label>BG</label><input type="color" value="#000000" id="bdBg" oninput="upd()"></div>
+        <div class="sl-row"><label>Text</label><input type="color" value="#ffffff" id="bdTx" oninput="upd()"></div>
+      </div>
+    </div>
+  </div>
+
+  <span class="sec-lbl">Banner order (drag to reorder)</span>
+  <div class="strip" id="strip"><span style="color:#222;font-size:9px;padding:3px">No agents on canvas.</span></div>
+  <span class="sec-lbl" id="ownedLbl">Your Agents (0) — click to add to canvas</span>
+  <div class="agents-grid" id="agentGrid"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MUSIC VIEW
+════════════════════════════════════════════════════════════ -->
+<div class="view" id="viewMusic">
+  <div class="page-eyebrow">BOOA Studio</div>
+  <div class="page-title">Agent Sound</div>
+  <p class="page-desc">Sound is generated from your BOOA pixel data — same engine as Agent Sound. Each row of pixels = one beat.</p>
+
+  <!-- Empty state -->
+  <div class="empty-music" id="musicEmpty">
+    <div style="font-size:24px;color:#1a1a1a">♪</div>
+    <p>No agents on canvas yet. Switch to Banner, upload SVG files, and add them to the canvas — they'll appear here as mixer tracks.</p>
+    <button class="tbtn" onclick="switchView('banner')">← Go to Banner</button>
+  </div>
+
+  <!-- Music content (shown when agents exist) -->
+  <div id="musicContent" style="display:none">
+
+    <!-- Transport -->
+    <div class="transport">
+      <button class="t-btn play" id="musicPlayBtn" onclick="toggleMusicPlay()">▶ PLAY</button>
+      <button class="t-btn rec" id="musicRecBtn" onclick="toggleRec()">● RECORD</button>
+      <div class="fmt-group">
+        <button class="fmt-btn active" id="fmtMp3" onclick="setFmt('mp3',this)">MP3</button>
+        <button class="fmt-btn" id="fmtWebm" onclick="setFmt('webm',this)">WEBM</button>
+      </div>
+      <button class="t-btn dl" id="musicDlBtn" onclick="doDownload()" disabled>↓ Download</button>
+      <div class="t-sep"></div>
+      <div class="bpm-wrap">
+        <label>BPM</label>
+        <input type="range" min="40" max="240" value="120" id="musicBpm" oninput="musicBpmVal=+this.value;document.getElementById('musicBpmV').textContent=musicBpmVal" style="width:80px;accent-color:var(--pink)"/>
+        <span style="font-size:11px;color:var(--pink);width:28px" id="musicBpmV">120</span>
+      </div>
+      <label style="font-size:8px;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer">
+        <input type="checkbox" id="loopChk" checked style="accent-color:var(--pink)"/> Loop
+      </label>
+      <div class="t-sep"></div>
+      <div class="status-dot" id="musicDot" style="background:var(--border)"></div>
+      <span style="font-size:8px;text-transform:uppercase;color:var(--muted)" id="musicStatusLbl">READY</span>
+      <span id="recRunning" style="display:none;font-size:8px;color:#f44;display:flex;align-items:center;gap:4px">
+        <div class="rec-dot-anim"></div>REC
+      </span>
+    </div>
+
+    <!-- Row indicator (64 dots = 64 pixel rows) -->
+    <div class="row-ind" id="rowInd"></div>
+
+    <!-- Waveform -->
+    <div class="wave-wrap"><canvas id="musicWave"></canvas></div>
+
+    <!-- BOOA Mixer -->
+    <span class="sec-lbl">Agent Mixer — each agent's sound comes from its own pixel data</span>
+    <div class="mixer-wrap" id="mixerWrap"></div>
+
+
+    <!-- Crossfader -->
+    <div class="xfader-wrap">
+      <div class="panel-title" style="font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:6px">Crossfader — assign agents to A or B on their cards</div>
+      <div class="xfader-row">
+        <div style="text-align:center">
+          <div style="font-size:8px;color:#c27a90;margin-bottom:2px">A</div>
+          <div class="xfader-slot" id="xfSlotA"><span style="font-size:7px;color:#2a2a2a">none</span></div>
+        </div>
+        <div style="flex:1">
+          <input type="range" min="0" max="100" value="50" id="xfSlider" class="xfader-slider" style="width:100%" oninput="onXfader(this.value)"/>
+          <div class="xfader-labels"><span>← A</span><span>B →</span></div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:8px;color:#887ECB;margin-bottom:2px">B</div>
+          <div class="xfader-slot" id="xfSlotB"><span style="font-size:7px;color:#2a2a2a">none</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FX + Recording info side by side -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div class="panel">
+        <div class="panel-title">FX Chain</div>
+        <div class="fx-row"><span class="fx-lbl">Attack</span><input type="range" min="0" max="100" value="15" id="fxAtk" oninput="document.getElementById('fxAtkV').textContent=this.value" style="flex:1;accent-color:#887ECB"/><span class="fx-val" id="fxAtkV">15</span></div>
+        <div class="fx-row"><span class="fx-lbl">Decay</span><input type="range" min="0" max="100" value="40" id="fxDcy" oninput="document.getElementById('fxDcyV').textContent=this.value" style="flex:1;accent-color:#6ABFC6"/><span class="fx-val" id="fxDcyV">40</span></div>
+        <div class="fx-row"><span class="fx-lbl">Delay</span><input type="range" min="0" max="100" value="20" id="fxDly" oninput="document.getElementById('fxDlyV').textContent=this.value" style="flex:1;accent-color:var(--teal)"/><span class="fx-val" id="fxDlyV">20</span></div>
+        <div class="fx-row"><span class="fx-lbl">Reverb</span><input type="range" min="0" max="100" value="15" id="fxRev" oninput="document.getElementById('fxRevV').textContent=this.value" style="flex:1;accent-color:var(--purple)"/><span class="fx-val" id="fxRevV">15</span></div>
+        <div class="fx-row"><span class="fx-lbl">Volume</span><input type="range" min="0" max="100" value="60" id="fxVol" oninput="document.getElementById('fxVolV').textContent=this.value;applyMusicVol()" style="flex:1;accent-color:var(--pink)"/><span class="fx-val" id="fxVolV">60</span></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Recording</div>
+        <div style="font-size:8px;color:#333;line-height:1.9;margin-bottom:8px">
+          1. Pick MP3 or WEBM format<br>
+          2. Press RECORD — playback starts<br>
+          3. Press STOP REC when finished<br>
+          4. Click DOWNLOAD to save file
+        </div>
+        <div style="font-size:8px;color:#222" id="recStatusTxt">No recording yet.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  C64 PALETTE → MUSIC (exact same as agent-sound/page.tsx)
+// ══════════════════════════════════════════════════════════════
+const C64_HEX=[
+  '000000','626262','898989','ADADAD','FFFFFF',
+  '9F4E44','CB7E75','6D5412','A1683C','C9D487',
+  '9AE29B','5CAB5E','6ABFC6','887ECB','50459B','A057A3',
+];
+const COLOR_NOTES=[
+  0,65.41,82.41,110.00,146.83,174.61,220.00,130.81,
+  164.81,329.63,392.00,261.63,349.23,440.00,293.66,523.25,
+];
+const COLOR_BRIGHTNESS=C64_HEX.map(hex=>{
+  const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+  return(r*0.299+g*0.587+b*0.114)/255;
+});
+const COLOR_WAVE=[
+  'sine','triangle','triangle','triangle','sine',
+  'sawtooth','sawtooth','square','square','sine',
+  'sine','triangle','sine','sawtooth','square','sawtooth',
+];
+
+// Parse BOOA SVG → 64×64 grid of C64 color indices (exact agent-sound logic)
+function svgToPixelGrid(svgString){
+  const grid=Array.from({length:64},()=>new Array(64).fill(0));
+  const bgMatch=svgString.match(/<rect fill="#([0-9A-Fa-f]{6})"/);
+  if(bgMatch){const bi=C64_HEX.indexOf(bgMatch[1].toUpperCase());if(bi>=0)for(let y=0;y<64;y++)for(let x=0;x<64;x++)grid[y][x]=bi;}
+  const pathRx=/<path stroke="#([0-9A-Fa-f]{6})" d="([^"]+)"/g;let m;
+  while((m=pathRx.exec(svgString))!==null){
+    const ci=C64_HEX.indexOf(m[1].toUpperCase());if(ci<0)continue;
+    const cmdRx=/M(\d+)\s+(\d+)h(\d+)/g;let cmd;
+    while((cmd=cmdRx.exec(m[2]))!==null){
+      const x=parseInt(cmd[1]),y=parseInt(cmd[2]),len=parseInt(cmd[3]);
+      for(let i=0;i<len&&x+i<64;i++)if(y<64)grid[y][x+i]=ci;
+    }
+  }
+  return grid;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SHARED STATE
+// ══════════════════════════════════════════════════════════════
+let owned=[];         // {id,name,svg,bitmap,pixelGrid,hidden,vol:0.8}
+let canvasAgents=[];  // {ownedIdx,x,y,size}
+let selectedCA=new Set();
+let dragging=null,resizing=null,stripDragFrom=null;
+let DPR=window.devicePixelRatio||1;
+
+// Banner state
+const CW=1500,CH=500,PAD=40,AW=CW-PAD*2,AH=CH-PAD*2;
+let bgColor='#0a0a0a',bgOff=false,customBg=null;
+let shadowOn=false,badgeOn=false;
+let mode='free';
+let activeFBtn=document.querySelector('.f-btn.active');
+
+// Music state
+let musicBpmVal=120,musicPlaying=false,musicRow=-1,musicLooping=true;
+let musicStopFlag=false,musicInterval=null;
+let musicCtx=null,musicMaster=null,musicAnalyser=null;
+let mutedAgents=new Set();
+let agentVols={};
+let soloAgent=null;         // id of soloed agent or null
+let agentPitch={};          // per id: -1 | 0 | 1  (octave)
+let agentSpeed={};          // per id: 0.5 | 1 | 2
+let agentReverse={};        // per id: bool
+let agentRowPos={};         // per id: float row pointer (independent advance)
+let xfSide={};              // per id: 'A' | 'B' | null
+let xfPos=50;               // 0=full A, 100=full B
+
+// Recording
+let recFormat='mp3',isRecording=false;
+let mediaRecorder=null,recChunks=[],pcmSamples=[],scriptProc=null;
+let recBlob=null,mp3Blob=null;
+
+// ══════════════════════════════════════════════════════════════
+//  VIEW SWITCHING
+// ══════════════════════════════════════════════════════════════
+function switchView(v){
+  document.getElementById('viewBanner').classList.toggle('active',v==='banner');
+  document.getElementById('viewMusic').classList.toggle('active',v==='music');
+  document.getElementById('vsBanner').classList.toggle('active',v==='banner');
+  document.getElementById('vsMusic').classList.toggle('active',v==='music');
+  if(v==='music')refreshMusicView();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SVG LOADING
+// ══════════════════════════════════════════════════════════════
+function stripBlackBg(svgStr){
+  const doc=new DOMParser().parseFromString(svgStr,'image/svg+xml');
+  const root=doc.documentElement;
+  const vb=(root.getAttribute('viewBox')||'0 0 64 64').split(' ').map(Number);
+  const vw=vb[2]||64,vh=vb[3]||64;
+  root.querySelectorAll('rect').forEach(el=>{
+    const x=parseFloat(el.getAttribute('x')||'0'),y=parseFloat(el.getAttribute('y')||'0');
+    const w=parseFloat(el.getAttribute('width')||'0'),h=parseFloat(el.getAttribute('height')||'0');
+    const fill=(el.getAttribute('fill')||el.style.fill||'').toLowerCase().trim();
+    const covers=(x<=1&&y<=1&&w>=vw*0.9&&h>=vh*0.9);
+    const blk=(fill===''||fill==='#000'||fill==='#000000'||fill==='black');
+    if(covers||blk)el.remove();
+  });
+  root.style.background='transparent';
+  return new XMLSerializer().serializeToString(doc);
+}
+
+function rasterizeSvg(svgStr){
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    const blob=new Blob([stripBlackBg(svgStr)],{type:'image/svg+xml'});
+    const url=URL.createObjectURL(blob);
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      const t=document.createElement('canvas');t.width=64;t.height=64;
+      const c=t.getContext('2d');c.clearRect(0,0,64,64);c.imageSmoothingEnabled=false;c.drawImage(img,0,0,64,64);
+      createImageBitmap(t).then(res).catch(rej);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);rej();};
+    img.src=url;
+  });
+}
+
+// ── Khora public API config ──────────────────────────────────
+const API='/api/banner-nfts';
+
+function setWalletStatus(msg,type){const el=document.getElementById('walletStatus');if(el){el.textContent=msg;el.className='wallet-status'+(type?' '+type:'');}}
+
+async function loadWallet(){
+  const addr=document.getElementById('walletAddr').value.trim();
+  await doLoadWallet(addr);
+}
+async function loadWallet2(){
+  const addr=(document.getElementById('walletAddr2')||document.getElementById('walletAddr')).value.trim();
+  await doLoadWallet(addr);
+}
+
+async function doLoadWallet(addr){
+  if(!/^0x[a-fA-F0-9]{40}$/.test(addr)){setWalletStatus('Invalid address','err');return;}
+  setWalletStatus('Loading...','loading');
+  document.getElementById('walletBtn').disabled=true;
+  try{
+    // Exact same call as Khora's banner-builder
+    const res=await fetch(`${API}?address=${addr}&chain=shape`);
+    if(!res.ok){const d=await res.json().catch(()=>({}));throw new Error(d.error||'Failed to fetch');}
+    const data=await res.json();
+    if(!data.nfts||data.nfts.length===0)throw new Error('No BOOA agents found for this address');
+    setWalletStatus(`Found ${data.nfts.length} agents — loading SVGs...`,'loading');
+    let loaded=0;
+    const results=await Promise.all(data.nfts.map(async(nft,i)=>{
+      const tokenId=String(nft.tokenId||i+1);
+      const svg=nft.svg||'';
+      if(!svg)return null;
+      const bitmap=await rasterizeSvg(svg).catch(()=>null);
+      const pixelGrid=svgToPixelGrid(svg);
+      const displayImg=new Image();
+      displayImg.src='data:image/svg+xml,'+encodeURIComponent(svg);
+      await new Promise(r=>{displayImg.onload=r;displayImg.onerror=r;});
+      loaded++;
+      if(loaded%5===0)setWalletStatus(`Loading ${loaded}/${data.nfts.length}...`,'loading');
+      return{id:tokenId,name:nft.name||`BOOA #${tokenId}`,svg,bitmap,displayImg,pixelGrid,hidden:false,vol:0.8};
+    }));
+    owned=results.filter(Boolean).sort((a,b)=>+a.id-+b.id);
+    if(!owned.length){setWalletStatus('Could not load any agents','err');document.getElementById('walletBtn').disabled=false;return;}
+    setWalletStatus(`✓ ${owned.length} agents loaded`,'ok');
+    document.getElementById('ownedLbl').textContent=`Your Agents (${owned.length}) — click to add to canvas`;
+    buildGrid();drawBanner();
+  }catch(e){setWalletStatus(e.message,'err');}
+  document.getElementById('walletBtn').disabled=false;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  CANVAS DRAWING (Banner)
+// ══════════════════════════════════════════════════════════════
+const bCvs=document.getElementById('bannerCanvas');
+function bEvt(e){const r=bCvs.getBoundingClientRect();return{x:(e.clientX-r.left)*CW/r.width,y:(e.clientY-r.top)*CH/r.height};}
+function h2r(h,a){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}
+
+function drawBanner(){
+  DPR=window.devicePixelRatio||1;
+  bCvs.width=CW*DPR;bCvs.height=CH*DPR;bCvs.style.width='100%';
+  const ctx=bCvs.getContext('2d');ctx.scale(DPR,DPR);ctx.imageSmoothingEnabled=false;
+  if(bgOff)ctx.clearRect(0,0,CW,CH);
+  else{ctx.fillStyle=customBg||bgColor;ctx.fillRect(0,0,CW,CH);}
+  if(!canvasAgents.length){ctx.fillStyle='#333';ctx.font='22px monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Add agents from the grid below',CW/2,CH/2);return;}
+  const sh={ox:+v('shX'),oy:+v('shY'),blur:+v('shB'),color:document.getElementById('shC').value,op:+v('shO')/100};
+  const bd={bg:document.getElementById('bdBg').value,tx:document.getElementById('bdTx').value};
+  for(let i=0;i<canvasAgents.length;i++){
+    const ca=canvasAgents[i];const ag=owned[ca.ownedIdx];if(ag?.hidden)continue;
+    const{x,y,size}=ca;
+    if(shadowOn){ctx.shadowOffsetX=sh.ox;ctx.shadowOffsetY=sh.oy;ctx.shadowBlur=sh.blur;ctx.shadowColor=h2r(sh.color,sh.op);}
+    if(ag?.bitmap){ctx.drawImage(ag.bitmap,x,y,size,size);}
+    else if(ag?.displayImg&&ag.displayImg.complete){ctx.drawImage(ag.displayImg,x,y,size,size);}
+    else{ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.shadowBlur=0;ctx.fillStyle='#1a1a1a';ctx.fillRect(x,y,size,size);ctx.fillStyle='#555';ctx.font='12px monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('#'+(ag?.id||'?'),x+size/2,y+size/2);}
+    if(badgeOn&&size>40){ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.shadowBlur=0;const bh=Math.max(14,size*0.13);ctx.fillStyle=h2r(bd.bg,0.8);ctx.fillRect(x,y+size-bh,size,bh);ctx.fillStyle=bd.tx;ctx.font=`${Math.max(9,Math.floor(bh*0.65))}px monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(`#${ag?.id||'?'}`,x+size/2,y+size-bh/2);}
+    if(selectedCA.has(i)){ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.shadowBlur=0;ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.strokeRect(x+1,y+1,size-2,size-2);ctx.fillStyle='#fff';ctx.fillRect(x+size-8,y+size-8,8,8);}
+  }
+  ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.shadowBlur=0;
+}
+
+function v(id){return document.getElementById(id).value;}
+function upd(){
+  document.getElementById('shXv').textContent=v('shX')+'px';
+  document.getElementById('shYv').textContent=v('shY')+'px';
+  document.getElementById('shBv').textContent=v('shB')+'px';
+  document.getElementById('shOv').textContent=v('shO')+'%';
+  drawBanner();
+}
+
+// ── Mouse interactions ─────────────────────────────────────
+bCvs.addEventListener('mousedown',e=>{
+  const{x,y}=bEvt(e);
+  for(const i of selectedCA){const ca=canvasAgents[i];const hx=ca.x+ca.size-8,hy=ca.y+ca.size-8;if(x>=hx&&x<=hx+8&&y>=hy&&y<=hy+8){resizing={caIdx:i,startX:x,startY:y,startSize:ca.size};bCvs.style.cursor='nwse-resize';return;}}
+  let hit=-1;for(let i=canvasAgents.length-1;i>=0;i--){const ca=canvasAgents[i];if(owned[ca.ownedIdx]?.hidden)continue;if(x>=ca.x&&x<=ca.x+ca.size&&y>=ca.y&&y<=ca.y+ca.size){hit=i;break;}}
+  if(hit>=0){if(!e.shiftKey&&!selectedCA.has(hit))selectedCA.clear();selectedCA.add(hit);dragging={startX:x,startY:y,origs:Array.from(selectedCA).map(i=>({i,ox:canvasAgents[i].x,oy:canvasAgents[i].y}))};bCvs.style.cursor='grabbing';}
+  else{if(!e.shiftKey)selectedCA.clear();}
+  updateSelCtrl();drawBanner();
+});
+bCvs.addEventListener('mousemove',e=>{
+  const{x,y}=bEvt(e);
+  if(resizing){const d=Math.max(x-resizing.startX,y-resizing.startY);canvasAgents[resizing.caIdx].size=Math.max(20,Math.round(resizing.startSize+d));updateSelCtrl();drawBanner();return;}
+  if(dragging){const dx=x-dragging.startX,dy=y-dragging.startY;for(const{i,ox,oy}of dragging.origs){canvasAgents[i].x=Math.round(ox+dx);canvasAgents[i].y=Math.round(oy+dy);}drawBanner();return;}
+  let onH=false;for(const i of selectedCA){const ca=canvasAgents[i];if(x>=ca.x+ca.size-8&&x<=ca.x+ca.size&&y>=ca.y+ca.size-8&&y<=ca.y+ca.size){onH=true;break;}}
+  if(onH){bCvs.style.cursor='nwse-resize';return;}
+  for(let i=canvasAgents.length-1;i>=0;i--){const ca=canvasAgents[i];if(owned[ca.ownedIdx]?.hidden)continue;if(x>=ca.x&&x<=ca.x+ca.size&&y>=ca.y&&y<=ca.y+ca.size){bCvs.style.cursor='grab';return;}}
+  bCvs.style.cursor='default';
+});
+bCvs.addEventListener('mouseup',()=>{dragging=null;resizing=null;bCvs.style.cursor='default';});
+bCvs.addEventListener('mouseleave',()=>{dragging=null;resizing=null;});
+
+// ── Selected controls ──────────────────────────────────────
+function updateSelCtrl(){
+  const c=document.getElementById('selCtrl');
+  document.getElementById('canvasCount').textContent=`${canvasAgents.length} on canvas`;
+  if(!selectedCA.size){c.innerHTML='<span class="hint">Click an agent on the canvas to select · drag to move · resize = bottom-right corner</span>';return;}
+  const arr=Array.from(selectedCA);const sz=canvasAgents[arr[0]].size;
+  c.innerHTML=`
+    <span class="lbl">Selected (${arr.length})</span><div class="t-sep"></div>
+    <span class="lbl">Size</span>
+    <div class="sl-wrap"><input type="range" min="20" max="500" value="${sz}" id="selSz" oninput="resizeSel(this.value)" style="width:70px"><span class="val" id="selSzV">${sz}px</span></div>
+    <div class="t-sep"></div>
+    <span class="lbl">X</span><input type="number" value="${Math.round(canvasAgents[arr[0]].x)}" style="width:46px;background:#111;border:1px solid var(--border2);color:#aaa;font-family:inherit;font-size:9px;padding:2px 4px" oninput="moveSel('x',this.value)">
+    <span class="lbl">Y</span><input type="number" value="${Math.round(canvasAgents[arr[0]].y)}" style="width:46px;background:#111;border:1px solid var(--border2);color:#aaa;font-family:inherit;font-size:9px;padding:2px 4px" oninput="moveSel('y',this.value)">
+    <div class="t-sep"></div>
+    <button class="tbtn" onclick="bringFront()">Front</button>
+    <button class="tbtn" onclick="sendBack()">Back</button>
+    <button class="tbtn danger" onclick="deleteSel()">Delete</button>
+  `;
+}
+function resizeSel(val){val=+val;document.getElementById('selSzV').textContent=val+'px';for(const i of selectedCA)canvasAgents[i].size=val;drawBanner();}
+function moveSel(ax,val){val=+val;for(const i of selectedCA)canvasAgents[i][ax]=val;drawBanner();}
+function bringFront(){const arr=Array.from(selectedCA).sort((a,b)=>b-a);const pulled=arr.map(i=>canvasAgents[i]);for(const i of arr)canvasAgents.splice(i,1);canvasAgents.push(...pulled.reverse());selectedCA=new Set(canvasAgents.map((_,i)=>i).slice(-arr.length));drawBanner();}
+function sendBack(){const arr=Array.from(selectedCA).sort((a,b)=>a-b);const pulled=arr.map(i=>canvasAgents[i]);for(let i=arr.length-1;i>=0;i--)canvasAgents.splice(arr[i],1);canvasAgents.unshift(...pulled);selectedCA=new Set(Array.from({length:arr.length},(_,i)=>i));drawBanner();}
+function deleteSel(){const toRm=Array.from(selectedCA).sort((a,b)=>b-a);for(const i of toRm)canvasAgents.splice(i,1);selectedCA.clear();updateSelCtrl();buildGrid();buildStrip();drawBanner();}
+
+// ── BG / Global size ───────────────────────────────────────
+function setBg(m,btn){bgColor=m==='dark'?'#0a0a0a':'#ffffff';bgOff=false;customBg=null;['bgDarkBtn','bgLightBtn','bgOffBtn'].forEach(id=>document.getElementById(id).classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));drawBanner();}
+function toggleBgOff(){bgOff=!bgOff;customBg=null;['bgDarkBtn','bgLightBtn','bgOffBtn'].forEach(id=>document.getElementById(id).classList.remove('active'));if(bgOff)document.getElementById('bgOffBtn').classList.add('active');document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));drawBanner();}
+function applyGlobalSize(val){document.getElementById('gsizeV').textContent=val;for(const ca of canvasAgents)ca.size=+val;drawBanner();}
+
+function clearCanvas(){canvasAgents=[];selectedCA.clear();buildGrid();buildStrip();updateSelCtrl();drawBanner();updatePalette();}
+function toggleShadow(){shadowOn=!shadowOn;const t=document.getElementById('shadowToggle');t.textContent=shadowOn?'ON':'OFF';t.classList.toggle('on',shadowOn);document.getElementById('shadowCtrls').style.display=shadowOn?'block':'none';drawBanner();}
+function toggleBadge(){badgeOn=!badgeOn;const t=document.getElementById('badgeToggle');t.textContent=badgeOn?'ON':'OFF';t.classList.toggle('on',badgeOn);document.getElementById('badgeCtrls').style.display=badgeOn?'block':'none';drawBanner();}
+
+// ── Formations ─────────────────────────────────────────────
+
+
+
+// ── Palette extraction ─────────────────────────────────────
+
+function updatePalette(){
+  // Extract exact C64 colors from pixel grids — no sampling, no duplicates
+  const agents=canvasAgents.map(ca=>owned[ca.ownedIdx]).filter(ag=>ag&&!ag.hidden&&ag.pixelGrid);
+  const pw=document.getElementById('paletteWrap');
+  if(!agents.length){pw.style.display='none';return;}
+
+  // Count each C64 color index used across all agents
+  const counts=new Map(); // colorIdx → total pixel count
+  for(const ag of agents){
+    for(let y=0;y<64;y++){
+      for(let x=0;x<64;x++){
+        const ci=ag.pixelGrid[y][x];
+        if(ci===0)continue; // skip black bg
+        counts.set(ci,(counts.get(ci)||0)+1);
+      }
+    }
+  }
+
+  // Sort by frequency, convert to hex, filter near-black/near-white
+  const sorted=Array.from(counts.entries())
+    .sort((a,b)=>b[1]-a[1])
+    .map(([ci])=>'#'+C64_HEX[ci])
+    .filter(c=>{const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16);const lum=0.299*r+0.587*g+0.114*b;return lum>18&&lum<237;});
+
+  // Already deduplicated since we're using exact C64 indices
+  const sw=document.getElementById('swatches');sw.innerHTML='';
+  if(!sorted.length){pw.style.display='none';return;}
+  pw.style.display='flex';
+  sorted.forEach(c=>{
+    const s=document.createElement('span');s.className='swatch'+(customBg===c?' active':'');
+    s.style.background=c;s.title=c;
+    s.onclick=()=>{bgOff=false;customBg=customBg===c?null:c;['bgDarkBtn','bgLightBtn','bgOffBtn'].forEach(id=>document.getElementById(id).classList.remove('active'));document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));if(customBg)s.classList.add('active');drawBanner();};
+    sw.appendChild(s);
+  });
+}
+
+// ── Grid + strip ───────────────────────────────────────────
+function bm2url(bm){const t=document.createElement('canvas');t.width=64;t.height=64;if(bm)t.getContext('2d').drawImage(bm,0,0,64,64);return t.toDataURL();}
+function svgUrl(svg){return svg?'data:image/svg+xml,'+encodeURIComponent(svg):'';}
+function isOnCanvas(oi){return canvasAgents.some(ca=>ca.ownedIdx===oi);}
+function toggleFromGrid(oi){
+  if(isOnCanvas(oi)){canvasAgents=canvasAgents.filter(ca=>ca.ownedIdx!==oi);selectedCA.clear();}
+  else{const sz=+v('gsizeSlider');const off=canvasAgents.length*12%90;canvasAgents.push({ownedIdx:oi,x:PAD+off,y:PAD+off,size:sz});}
+  buildGrid();buildStrip();updateSelCtrl();updatePalette();drawBanner();
+}
+function toggleAgHidden(oi){owned[oi].hidden=!owned[oi].hidden;buildGrid();drawBanner();updatePalette();}
+
+function buildGrid(){
+  const g=document.getElementById('agentGrid');g.innerHTML='';
+  owned.forEach((ag,i)=>{
+    const onC=isOnCanvas(i);
+    const cell=document.createElement('div');cell.className='agent-cell';
+    const thumb=document.createElement('div');thumb.className='agent-thumb'+(onC?' on-canvas':'')+(ag.hidden?' hidden-ag':'');
+    if(ag.svg){const img=document.createElement('img');img.src=svgUrl(ag.svg);img.style.cssText='width:100%;height:100%;image-rendering:pixelated;display:block';thumb.appendChild(img);}
+    const lbl=document.createElement('div');lbl.className='tid';lbl.textContent=`#${ag.id}`;thumb.appendChild(lbl);
+    thumb.onclick=()=>toggleFromGrid(i);cell.appendChild(thumb);
+    const tog=document.createElement('button');
+    tog.className='ag-toggle'+(onC?' visible':'')+(onC?(ag.hidden?' is-off':' is-on'):'');
+    tog.textContent=ag.hidden?'OFF':'ON';tog.onclick=e=>{e.stopPropagation();if(onC)toggleAgHidden(i);};
+    cell.appendChild(tog);g.appendChild(cell);
+  });
+}
+
+function buildStrip(){
+  const s=document.getElementById('strip');s.innerHTML='';
+  if(!canvasAgents.length){s.innerHTML='<span style="color:#222;font-size:9px;padding:3px">No agents on canvas.</span>';return;}
+  canvasAgents.forEach((ca,pos)=>{
+    const ag=owned[ca.ownedIdx];
+    const div=document.createElement('div');div.className='s-item';if(ag?.hidden)div.style.opacity='0.3';div.draggable=true;
+    if(ag?.svg){const img=document.createElement('img');img.src=svgUrl(ag.svg);img.style.cssText='width:100%;height:100%;image-rendering:pixelated;display:block';div.appendChild(img);}
+    const lbl=document.createElement('span');lbl.textContent=`#${ag?.id||'?'}`;div.appendChild(lbl);
+    const rm=document.createElement('div');rm.className='rm';rm.textContent='×';
+    rm.onclick=e=>{e.stopPropagation();canvasAgents.splice(pos,1);selectedCA.clear();buildGrid();buildStrip();updateSelCtrl();updatePalette();drawBanner();};
+    div.appendChild(rm);
+    div.ondragstart=()=>stripDragFrom=pos;div.ondragover=e=>e.preventDefault();
+    div.ondrop=()=>{if(stripDragFrom!==null&&stripDragFrom!==pos){const[item]=canvasAgents.splice(stripDragFrom,1);canvasAgents.splice(pos,0,item);buildStrip();drawBanner();}stripDragFrom=null;};
+    div.onclick=()=>{selectedCA.clear();selectedCA.add(pos);updateSelCtrl();drawBanner();};
+    s.appendChild(div);
+  });
+}
+
+function exportBanner(){
+  const prevSel=new Set(selectedCA);selectedCA.clear();
+  const exp=document.createElement('canvas');exp.width=CW;exp.height=CH;
+  const ctx=exp.getContext('2d');ctx.imageSmoothingEnabled=false;
+  if(!bgOff){ctx.fillStyle=customBg||bgColor;ctx.fillRect(0,0,CW,CH);}
+  const sh={ox:+v('shX'),oy:+v('shY'),blur:+v('shB'),color:document.getElementById('shC').value,op:+v('shO')/100};
+  const bd={bg:document.getElementById('bdBg').value,tx:document.getElementById('bdTx').value};
+  for(const ca of canvasAgents){
+    const ag=owned[ca.ownedIdx];if(ag?.hidden)continue;const{x,y,size}=ca;
+    if(shadowOn){ctx.shadowOffsetX=sh.ox;ctx.shadowOffsetY=sh.oy;ctx.shadowBlur=sh.blur;ctx.shadowColor=h2r(sh.color,sh.op);}
+    if(ag?.bitmap){ctx.drawImage(ag.bitmap,x,y,size,size);}else if(ag?.displayImg&&ag.displayImg.complete){ctx.drawImage(ag.displayImg,x,y,size,size);}
+    if(badgeOn&&size>40){ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.shadowBlur=0;const bh=Math.max(14,size*0.13);ctx.fillStyle=h2r(bd.bg,0.8);ctx.fillRect(x,y+size-bh,size,bh);ctx.fillStyle=bd.tx;ctx.font=`${Math.max(9,Math.floor(bh*0.65))}px monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(`#${ag?.id||'?'}`,x+size/2,y+size-bh/2);}
+  }
+  ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.shadowBlur=0;
+  const a=document.createElement('a');a.download='booa-banner.png';a.href=exp.toDataURL('image/png');a.click();
+  selectedCA=prevSel;drawBanner();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  MUSIC ENGINE — exact agent-sound logic, multi-BOOA layered
+// ══════════════════════════════════════════════════════════════
+function createImpulse(ctx,dur,decay){
+  const len=ctx.sampleRate*dur;const buf=ctx.createBuffer(2,len,ctx.sampleRate);
+  for(let ch=0;ch<2;ch++){const d=buf.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay);}
+  return buf;
+}
+
+function ensureMusicCtx(){
+  if(musicCtx&&musicCtx.state!=='closed')return;
+  musicCtx=new AudioContext();
+  musicMaster=musicCtx.createGain();musicMaster.gain.value=+v('fxVol')/100*0.5;
+  const dly=musicCtx.createDelay(1.0);dly.delayTime.value=+v('fxDly')/100*0.6;
+  const dlyFb=musicCtx.createGain();dlyFb.gain.value=+v('fxDly')/100*0.4;
+  const dlyWet=musicCtx.createGain();dlyWet.gain.value=+v('fxDly')/100*0.5;
+  dly.connect(dlyFb);dlyFb.connect(dly);dly.connect(dlyWet);
+  const conv=musicCtx.createConvolver();conv.buffer=createImpulse(musicCtx,2.0,2.5);
+  const rvWet=musicCtx.createGain();rvWet.gain.value=+v('fxRev')/100*0.6;
+  const rvDry=musicCtx.createGain();rvDry.gain.value=1-+v('fxRev')/100*0.3;
+  conv.connect(rvWet);
+  musicAnalyser=musicCtx.createAnalyser();musicAnalyser.fftSize=256;
+  musicMaster.connect(rvDry);musicMaster.connect(dly);musicMaster.connect(conv);
+  rvDry.connect(musicAnalyser);dlyWet.connect(musicAnalyser);rvWet.connect(musicAnalyser);
+  musicAnalyser.connect(musicCtx.destination);
+}
+
+function applyMusicVol(){if(musicMaster)musicMaster.gain.value=+v('fxVol')/100*0.5;}
+
+// Play one row across all active BOOAs — exact agent-sound note logic
+function playRowForAgent(ag,row,agVolScale,pitchShift){
+  if(!ag||!ag.pixelGrid||mutedAgents.has(ag.id))return;
+  const grid=ag.pixelGrid;const ctx=musicCtx;const master=musicMaster;
+  const atk=0.005+(+v('fxAtk')/100*0.495);
+  const dcy=0.05+(+v('fxDcy')/100*0.95);
+  const noteDur=atk+dcy;
+
+  const colorCounts=new Map();
+  for(let x=0;x<64;x++){const c=grid[row][x];if(c!==0)colorCounts.set(c,(colorCounts.get(c)||0)+1);}
+  const sorted=Array.from(colorCounts.entries()).sort((a,b)=>b[1]-a[1]).slice(0,4);
+
+  for(const[ci,count]of sorted){
+    let freq=COLOR_NOTES[ci];if(freq===0)continue;
+    if(pitchShift) freq=freq*Math.pow(2,pitchShift);
+    const osc=ctx.createOscillator();const gain=ctx.createGain();
+    osc.type=COLOR_WAVE[ci];osc.frequency.value=freq;
+    const agVol=agentVols[ag.id]??0.8;
+    const vol=Math.min((count/64)*COLOR_BRIGHTNESS[ci]*1.5,0.4)*agVol*agVolScale;
+    const now=ctx.currentTime;
+    gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(vol,now+atk);
+    gain.gain.setValueAtTime(vol,now+atk);gain.gain.exponentialRampToValueAtTime(0.001,now+noteDur);
+    osc.connect(gain);gain.connect(master);osc.start(now);osc.stop(now+noteDur+0.01);
+  }
+  // noise burst (agent-sound: when 6+ colors in row)
+  if(colorCounts.size>=6){
+    const bufSz=ctx.sampleRate*0.05;const buf=ctx.createBuffer(1,bufSz,ctx.sampleRate);
+    const dat=buf.getChannelData(0);for(let i=0;i<bufSz;i++)dat[i]=(Math.random()*2-1)*0.3;
+    const ns=ctx.createBufferSource();ns.buffer=buf;
+    const ng=ctx.createGain();ng.gain.setValueAtTime(0.04,ctx.currentTime);ng.gain.linearRampToValueAtTime(0,ctx.currentTime+0.05);
+    ns.connect(ng);ng.connect(master);ns.start(ctx.currentTime);
+  }
+}
+
+// Active agents for music = those on canvas + not muted
+function activeMusicAgents(){
+  return canvasAgents.map(ca=>owned[ca.ownedIdx]).filter(ag=>ag&&ag.pixelGrid);
+}
+function playingAgents(){
+  const all=activeMusicAgents();
+  if(soloAgent)return all.filter(ag=>ag.id===soloAgent);
+  return all.filter(ag=>!mutedAgents.has(ag.id));
+}
+
+// Tick through rows — per-agent independent speed/reverse
+function musicTick(){
+  if(musicStopFlag)return;
+
+  // Advance global row (for the row indicator display)
+  const globalRow=musicRow<0?0:musicRow;
+  setMusicRow(globalRow);
+
+  const all=activeMusicAgents();
+  const playing=playingAgents();
+  const volScale=playing.length>0?1/Math.sqrt(playing.length):1;
+
+  for(const ag of playing){
+    // Init per-agent row pos if needed
+    if(agentRowPos[ag.id]==null) agentRowPos[ag.id]=0;
+
+    const spd=agentSpeed[ag.id]??1;
+    const rev=agentReverse[ag.id]??false;
+    const pitch=agentPitch[ag.id]??0;
+
+    // Current effective row for this agent
+    let effRow=Math.floor(agentRowPos[ag.id])%64;
+    if(rev) effRow=63-effRow;
+
+    // Crossfader volume scaling
+    let xfVol=1;
+    const side=xfSide[ag.id];
+    if(side==='A') xfVol=(100-xfPos)/100;
+    else if(side==='B') xfVol=xfPos/100;
+
+    playRowForAgent(ag, effRow, volScale*xfVol, pitch);
+
+    // Advance this agent's row pointer by its speed
+    agentRowPos[ag.id]=(agentRowPos[ag.id]+spd);
+    if(agentRowPos[ag.id]>=64) agentRowPos[ag.id]=0;
+
+    // Update individual row preview
+    const el=document.getElementById(`mrp_${ag.id}`);
+    if(el){
+      const segs=el.querySelectorAll('.mrp-seg');
+      const gridRow=ag.pixelGrid[effRow]||[];
+      const step=Math.floor(64/segs.length);
+      segs.forEach((s,i)=>{const ci=gridRow[i*step]||0;s.style.background=ci>0?`#${C64_HEX[ci]}`:'#111';});
+    }
+  }
+
+  // Flash beat indicators
+  for(const ag of all){
+    const el=document.getElementById(`mpl_${ag.id}`);
+    if(el&&playing.includes(ag)){el.classList.add('beat');setTimeout(()=>el.classList.remove('beat'),80);}
+  }
+
+  // Advance global row
+  const nextRow=globalRow+1;
+  if(nextRow>=64){
+    if(document.getElementById('loopChk').checked){musicRow=0;}
+    else{stopMusic();return;}
+  } else {musicRow=nextRow;}
+
+  const beatMs=(60/musicBpmVal)*1000;
+  musicInterval=setTimeout(musicTick,beatMs);
+}
+
+
+function setMusicRow(row){
+  musicRow=row;
+  // update row indicator dots
+  const prev=document.querySelector('.row-dot.active');
+  if(prev)prev.classList.remove('active');
+  const dot=document.getElementById(`rd${row}`);if(dot)dot.classList.add('active');
+}
+
+
+function onXfader(val){
+  xfPos=+val;
+  // Update A/B slot volume labels
+  document.getElementById('xfSlotA').querySelector('span.xf-pct') && (document.getElementById('xfSlotA').querySelector('span.xf-pct').textContent=Math.round(100-xfPos)+'%');
+  document.getElementById('xfSlotB').querySelector('span.xf-pct') && (document.getElementById('xfSlotB').querySelector('span.xf-pct').textContent=Math.round(xfPos)+'%');
+}
+
+function assignXf(agId, side){
+  // Clear previous assignment on same side
+  Object.keys(xfSide).forEach(id=>{if(xfSide[id]===side)xfSide[id]=null;});
+  // Toggle: if already assigned to this side, unassign
+  if(xfSide[agId]===side){xfSide[agId]=null;}
+  else{xfSide[agId]=side;}
+  updateXfSlots();
+  refreshMixerCardButtons();
+}
+
+function updateXfSlots(){
+  const all=activeMusicAgents();
+  const slotA=document.getElementById('xfSlotA');
+  const slotB=document.getElementById('xfSlotB');
+  const agA=all.find(ag=>xfSide[ag.id]==='A');
+  const agB=all.find(ag=>xfSide[ag.id]==='B');
+  slotA.innerHTML=agA&&agA.svg?`<img src="${svgUrl(agA.svg)}"/><span class="xfader-slot-lbl">#${agA.id}</span>`:'<span style="font-size:7px;color:#2a2a2a">none</span>';
+  slotB.innerHTML=agB&&agB.svg?`<img src="${svgUrl(agB.svg)}"/><span class="xfader-slot-lbl">#${agB.id}</span>`:'<span style="font-size:7px;color:#2a2a2a">none</span>';
+}
+
+function toggleSolo(agId){
+  soloAgent=soloAgent===agId?null:agId;
+  refreshMixerCardButtons();
+}
+
+function setAgentSpeed(agId,spd){
+  agentSpeed[agId]=spd;
+  agentRowPos[agId]=0; // reset position on speed change
+  refreshMixerCardButtons();
+}
+
+function setAgentPitch(agId,p){
+  agentPitch[agId]=p;
+  refreshMixerCardButtons();
+}
+
+function toggleAgentReverse(agId){
+  agentReverse[agId]=!agentReverse[agId];
+  agentRowPos[agId]=0;
+  refreshMixerCardButtons();
+}
+
+function refreshMixerCardButtons(){
+  // Re-render just the button states without full rebuild
+  activeMusicAgents().forEach(ag=>{
+    const spd=agentSpeed[ag.id]??1;
+    const pitch=agentPitch[ag.id]??0;
+    const rev=agentReverse[ag.id]??false;
+    const isSolo=soloAgent===ag.id;
+    const isMuted=mutedAgents.has(ag.id);
+    const side=xfSide[ag.id];
+    [0.5,1,2].forEach(s=>{
+      const el=document.getElementById(`spd_${ag.id}_${s}`);
+      if(el)el.classList.toggle('active',spd===s);
+    });
+    [-1,0,1].forEach(p=>{
+      const el=document.getElementById(`pch_${ag.id}_${p}`);
+      if(el)el.classList.toggle('active',pitch===p);
+    });
+    const revEl=document.getElementById(`rev_${ag.id}`);
+    if(revEl){revEl.classList.toggle('rev-active',rev);revEl.textContent=rev?'REV ✓':'REV';}
+    const soloEl=document.getElementById(`solo_${ag.id}`);
+    if(soloEl){soloEl.classList.toggle('solo-active',isSolo);soloEl.textContent=isSolo?'SOLO ✓':'SOLO';}
+    const muteEl=document.getElementById(`mute_${ag.id}`);
+    if(muteEl){muteEl.classList.toggle('muted-btn',isMuted);muteEl.textContent=isMuted?'MUTED':'ACTIVE';}
+    const aEl=document.getElementById(`xfa_${ag.id}`);
+    if(aEl)aEl.classList.toggle('a-side',side==='A');
+    const bEl=document.getElementById(`xfb_${ag.id}`);
+    if(bEl)bEl.classList.toggle('b-side',side==='B');
+  });
+}
+
+function startMusic(){
+  ensureMusicCtx();musicStopFlag=false;musicRow=0;
+  // Reset all per-agent row positions
+  activeMusicAgents().forEach(ag=>{agentRowPos[ag.id]=0;});
+  musicTick();musicPlaying=true;setMusicStatus('LIVE','#5CAB5E');
+}
+function stopMusic(){musicStopFlag=true;if(musicInterval)clearTimeout(musicInterval);musicPlaying=false;musicRow=-1;setMusicStatus('READY','var(--border)');document.querySelectorAll('.row-dot.active').forEach(el=>el.classList.remove('active'));}
+function toggleMusicPlay(){if(musicPlaying){stopMusic();}else{startMusic();}const btn=document.getElementById('musicPlayBtn');btn.textContent=musicPlaying?'■ STOP':'▶ PLAY';btn.classList.toggle('active',musicPlaying);}
+function setMusicStatus(txt,color){document.getElementById('musicStatusLbl').textContent=txt;document.getElementById('musicDot').style.background=color;}
+
+// ── Waveform ───────────────────────────────────────────────
+const mWave=document.getElementById('musicWave');mWave.width=1200;mWave.height=60;
+const mWCtx=mWave.getContext('2d');
+(function waveLoop(){
+  requestAnimationFrame(waveLoop);
+  mWCtx.clearRect(0,0,mWave.width,mWave.height);
+  mWCtx.fillStyle='#0a0a0a';mWCtx.fillRect(0,0,mWave.width,mWave.height);
+  if(!musicAnalyser||!musicPlaying){mWCtx.strokeStyle='#1a1a1a';mWCtx.lineWidth=1;mWCtx.beginPath();mWCtx.moveTo(0,30);mWCtx.lineTo(mWave.width,30);mWCtx.stroke();return;}
+  const buf=new Uint8Array(musicAnalyser.frequencyBinCount);musicAnalyser.getByteTimeDomainData(buf);
+  mWCtx.strokeStyle='#c27a90';mWCtx.lineWidth=1.5;mWCtx.beginPath();
+  const sw=mWave.width/buf.length;
+  for(let i=0;i<buf.length;i++){const y=buf[i]/128*30;i===0?mWCtx.moveTo(0,y):mWCtx.lineTo(i*sw,y);}
+  mWCtx.stroke();
+})();
+
+// ── Music view builder ─────────────────────────────────────
+function refreshMusicView(){
+  const agents=activeMusicAgents();
+  document.getElementById('musicEmpty').style.display=agents.length?'none':'flex';
+  document.getElementById('musicContent').style.display=agents.length?'block':'none';
+  if(!agents.length)return;
+
+  // Row indicator
+  const ri=document.getElementById('rowInd');ri.innerHTML='';
+  for(let i=0;i<64;i++){const d=document.createElement('div');d.className='row-dot';d.id=`rd${i}`;ri.appendChild(d);}
+
+  // Mixer cards — with speed, pitch, reverse, solo, crossfader assign
+  const mw=document.getElementById('mixerWrap');mw.innerHTML='';
+  agents.forEach(ag=>{
+    if(!agentVols[ag.id])agentVols[ag.id]=ag.vol??0.8;
+    if(agentSpeed[ag.id]==null)agentSpeed[ag.id]=1;
+    if(agentPitch[ag.id]==null)agentPitch[ag.id]=0;
+    if(agentReverse[ag.id]==null)agentReverse[ag.id]=false;
+
+    const isMuted=mutedAgents.has(ag.id),isSolo=soloAgent===ag.id;
+    const spd=agentSpeed[ag.id],pitch=agentPitch[ag.id],rev=agentReverse[ag.id];
+    const side=xfSide[ag.id];
+
+    const card=document.createElement('div');
+    card.className='mixer-card'+(isMuted?' muted-card':'');
+    card.id=`mcard_${ag.id}`;
+
+    card.innerHTML=`
+      ${ag.svg?`<img class="mixer-thumb" src="${svgUrl(ag.svg)}"/>`:''}
+      <div class="mixer-name">${ag.name||'#'+ag.id}</div>
+      <div class="mixer-row-preview" id="mrp_${ag.id}">${'<div class="mrp-seg"></div>'.repeat(16)}</div>
+
+      <div class="mixer-vol-row" style="margin-bottom:6px">
+        <label>VOL</label>
+        <input type="range" min="0" max="100" value="${Math.round((agentVols[ag.id]??0.8)*100)}"
+          style="flex:1;accent-color:var(--pink)" oninput="agentVols[${ag.id}]=+this.value/100">
+      </div>
+
+      <div style="font-size:7px;color:#333;margin-bottom:3px;text-transform:uppercase;letter-spacing:.08em">Speed</div>
+      <div class="pb-row">
+        <button class="pb-btn${spd===0.5?' active':''}" id="spd_${ag.id}_0.5" onclick="setAgentSpeed(${ag.id},0.5)">0.5×</button>
+        <button class="pb-btn${spd===1?' active':''}" id="spd_${ag.id}_1" onclick="setAgentSpeed(${ag.id},1)">1×</button>
+        <button class="pb-btn${spd===2?' active':''}" id="spd_${ag.id}_2" onclick="setAgentSpeed(${ag.id},2)">2×</button>
+      </div>
+
+      <div style="font-size:7px;color:#333;margin-bottom:3px;text-transform:uppercase;letter-spacing:.08em">Pitch</div>
+      <div class="pb-row">
+        <button class="pb-btn${pitch===-1?' active':''}" id="pch_${ag.id}_-1" onclick="setAgentPitch(${ag.id},-1)">↓ Oct</button>
+        <button class="pb-btn${pitch===0?' active':''}" id="pch_${ag.id}_0" onclick="setAgentPitch(${ag.id},0)">♩</button>
+        <button class="pb-btn${pitch===1?' active':''}" id="pch_${ag.id}_1" onclick="setAgentPitch(${ag.id},1)">↑ Oct</button>
+      </div>
+
+      <div class="pb-row">
+        <button class="pb-btn${rev?' rev-active':''}" id="rev_${ag.id}" onclick="toggleAgentReverse(${ag.id})">${rev?'REV ✓':'REV'}</button>
+        <button class="pb-btn${isSolo?' solo-active':''}" id="solo_${ag.id}" onclick="toggleSolo(${ag.id})">${isSolo?'SOLO ✓':'SOLO'}</button>
+        <button class="mixer-mute${isMuted?' muted-btn':''}" id="mute_${ag.id}"
+          onclick="mutedAgents.has(${ag.id})?mutedAgents.delete(${ag.id}):mutedAgents.add(${ag.id});refreshMixerCardButtons();document.getElementById('mcard_${ag.id}').classList.toggle('muted-card',mutedAgents.has(${ag.id}))"
+          style="flex:1">${isMuted?'MUTED':'ACTIVE'}</button>
+      </div>
+
+      <div style="font-size:7px;color:#333;margin-bottom:3px;text-transform:uppercase;letter-spacing:.08em">Crossfader</div>
+      <div class="assign-row">
+        <button class="assign-btn${side==='A'?' a-side':''}" id="xfa_${ag.id}" onclick="assignXf(${ag.id},'A')">A</button>
+        <button class="assign-btn${side==='B'?' b-side':''}" id="xfb_${ag.id}" onclick="assignXf(${ag.id},'B')">B</button>
+      </div>
+
+      <div class="mixer-active-row">
+        <div class="mixer-playing" id="mpl_${ag.id}"></div>
+        <span style="font-size:7px;color:#2a2a2a">BEAT</span>
+      </div>
+    `;
+    mw.appendChild(card);
+  });
+  updateXfSlots();
+}
+
+// ── Recording ──────────────────────────────────────────────
+function setFmt(fmt,btn){recFormat=fmt;document.getElementById('fmtMp3').classList.toggle('active',fmt==='mp3');document.getElementById('fmtWebm').classList.toggle('active',fmt==='webm');}
+
+async function toggleRec(){if(isRecording)await stopRec();else await startRec();}
+
+async function startRec(){
+  ensureMusicCtx();
+  // Resume AudioContext — required by browser autoplay policy
+  if(musicCtx.state==='suspended') await musicCtx.resume();
+
+  recChunks=[];pcmSamples=[];recBlob=null;mp3Blob=null;
+  document.getElementById('musicDlBtn').disabled=true;
+  document.getElementById('recStatusTxt').textContent='Recording...';
+
+  // ── Fix 1: tap directly from master gain, not analyser
+  // This captures 100% of the audio signal before any branching
+  const dest=musicCtx.createMediaStreamDestination();
+  musicMaster.connect(dest);
+
+  // ── Fix 2: ScriptProcessor for PCM — connect to a SILENT node, not destination
+  // (connecting to destination was doubling the output and causing phasing)
+  const silentGain=musicCtx.createGain();
+  silentGain.gain.value=0;
+  silentGain.connect(musicCtx.destination);
+  scriptProc=musicCtx.createScriptProcessor(4096,2,2);
+  scriptProc.onaudioprocess=e=>{
+    if(!isRecording)return;
+    // Mix stereo to mono for MP3
+    const L=e.inputBuffer.getChannelData(0);
+    const R=e.inputBuffer.getChannelData(1);
+    const mono=new Float32Array(L.length);
+    for(let i=0;i<L.length;i++) mono[i]=(L[i]+R[i])*0.5;
+    pcmSamples.push(mono);
+  };
+  musicMaster.connect(scriptProc);
+  scriptProc.connect(silentGain);
+
+  // ── Fix 3: check MediaRecorder mime type support
+  const mimeType=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+    ?'audio/webm;codecs=opus'
+    :MediaRecorder.isTypeSupported('audio/webm')?'audio/webm':'';
+  mediaRecorder=mimeType?new MediaRecorder(dest.stream,{mimeType}):new MediaRecorder(dest.stream);
+
+  mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)recChunks.push(e.data);};
+  mediaRecorder.onstop=async()=>{
+    try{musicMaster.disconnect(dest);}catch(e){}
+    try{musicMaster.disconnect(scriptProc);}catch(e){}
+    recBlob=new Blob(recChunks,{type:mimeType||'audio/webm'});
+    if(recFormat==='mp3')await encodeMP3();
+    document.getElementById('musicDlBtn').disabled=false;
+    document.getElementById('recStatusTxt').textContent=`Done — ${recFormat.toUpperCase()} ready to download`;
+  };
+  mediaRecorder.start(250); // collect in 250ms chunks
+
+  isRecording=true;
+  document.getElementById('musicRecBtn').textContent='■ STOP REC';
+  document.getElementById('musicRecBtn').classList.add('active');
+  document.getElementById('recRunning').style.display='flex';
+  if(!musicPlaying)toggleMusicPlay();
+}
+
+async function stopRec(){
+  isRecording=false;
+  // Wait a moment to capture trailing audio before stopping
+  await new Promise(r=>setTimeout(r,300));
+  mediaRecorder?.stop();
+  if(scriptProc){try{scriptProc.disconnect();}catch(e){}scriptProc=null;}
+  document.getElementById('musicRecBtn').textContent='● RECORD';
+  document.getElementById('musicRecBtn').classList.remove('active');
+  document.getElementById('recRunning').style.display='none';
+}
+
+function resampleMono(input,ratio){
+  const outLen=Math.floor(input.length*ratio);
+  const out=new Float32Array(outLen);
+  for(let i=0;i<outLen;i++){const src=i/ratio;const lo=Math.floor(src),hi=Math.min(lo+1,input.length-1);out[i]=input[lo]+(input[hi]-input[lo])*(src-lo);}
+  return out;
+}
+async function encodeMP3(){
+  if(!pcmSamples.length||typeof lamejs==='undefined'){recFormat='webm';return;}
+  document.getElementById('recStatusTxt').textContent='Encoding MP3...';
+  const sr=musicCtx.sampleRate;const enc=new lamejs.Mp3Encoder(1,Math.min(sr,44100),128);const mp3=[];
+  // Resample if needed (lamejs max 44100)
+  const ratio=sr>44100?44100/sr:1;
+  for(const chunk of pcmSamples){
+    const resampled=ratio<1?resampleMono(chunk,ratio):chunk;
+    const s16=new Int16Array(resampled.length);
+    for(let i=0;i<resampled.length;i++){const c=Math.max(-1,Math.min(1,resampled[i]));s16[i]=c<0?c*0x8000:c*0x7FFF;}
+    const enc2=enc.encodeBuffer(s16);if(enc2.length>0)mp3.push(new Int8Array(enc2));
+  }
+  const fl=enc.flush();if(fl.length>0)mp3.push(new Int8Array(fl));
+  mp3Blob=new Blob(mp3,{type:'audio/mp3'});
+}
+
+function doDownload(){
+  const blob=recFormat==='mp3'&&mp3Blob?mp3Blob:recBlob;if(!blob)return;
+  const ext=recFormat==='mp3'&&mp3Blob?'mp3':'webm';
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`booa-mix.${ext}`;a.click();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════
+drawBanner();
+</script>
+</body>
+</html>
