@@ -369,6 +369,17 @@ input[type=range]{accent-color:var(--purple);cursor:pointer}
 .to-btn:hover{color:#ccc}
 .to-btn.active{background:rgba(106,191,198,.15);color:var(--teal);border-color:var(--teal)}
 .to-preview-lbl{font-size:7px;color:var(--dim);margin-top:4px}
+
+/* Music shadow type buttons */
+.msh-type{padding:3px 0;border:1px solid var(--border2);background:transparent;color:var(--dim);font-family:inherit;font-size:6px;cursor:pointer;text-transform:uppercase;text-align:center;transition:all .12s}
+.msh-type:hover{color:#aaa;border-color:#558}
+.msh-type.on{background:rgba(136,126,203,.2);color:#aab;border-color:var(--purple)}
+/* Agent shadow toggle pill */
+.ag-shpill{padding:1px 5px;border:1px solid var(--border2);background:transparent;color:var(--dim);font-family:inherit;font-size:6px;cursor:pointer;text-transform:uppercase;transition:all .1s}
+.ag-shpill.off{border-color:#600;color:#f44}
+.ag-shpill.ghost{border-color:var(--pink);color:var(--pink)}
+/* toggle active variant */
+.toggle.active{background:rgba(136,126,203,.15);color:#aab;border-color:var(--purple)}
 </style>
 </head>
 <body>
@@ -435,9 +446,11 @@ input[type=range]{accent-color:var(--purple);cursor:pointer}
     <button class="tbtn" onclick="clearCanvas()">Clear</button>
     <button class="tbtn export" onclick="exportBanner()">↓ PNG</button>
   </div>
-  <div class="panels">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">
+
+    <!-- PANEL 1: SHADOW (static position) -->
     <div class="panel">
-      <div class="panel-hdr"><span class="panel-title">Shadow</span><button class="toggle" id="shadowToggle" onclick="toggleShadow()">OFF</button></div>
+      <div class="panel-hdr"><span class="panel-title">Static Shadow</span><button class="toggle" id="shadowToggle" onclick="toggleShadow()">OFF</button></div>
       <div id="shadowCtrls" style="display:none">
         <div class="sl-row"><label>X</label><input type="range" min="-60" max="60" value="8" id="shX" oninput="upd()"><span class="v" id="shXv">8</span></div>
         <div class="sl-row"><label>Y</label><input type="range" min="-60" max="60" value="8" id="shY" oninput="upd()"><span class="v" id="shYv">8</span></div>
@@ -446,13 +459,92 @@ input[type=range]{accent-color:var(--purple);cursor:pointer}
         <div class="sl-row"><label>Color</label><input type="color" value="#000000" id="shC" oninput="upd()"></div>
       </div>
     </div>
+
+    <!-- PANEL 2: MUSIC SHADOW — transitions linked to beat -->
     <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Music Shadow</span>
+        <div style="display:flex;gap:3px;align-items:center">
+          <button class="toggle on" id="mshEnable" onclick="toggleMShadow()">ON</button>
+          <button class="toggle" id="mshHide" onclick="toggleMShadowHide()" title="Hide agent image — shadow only">Ghost</button>
+        </div>
+      </div>
+      <!-- Transition type picker -->
+      <div style="font-size:6px;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:4px">Transition</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:7px" id="mshTypeGrid"></div>
+      <!-- Per-agent controls -->
+      <div style="font-size:6px;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:4px">Per Agent</div>
+      <div style="display:flex;flex-wrap:wrap;gap:2px;margin-bottom:7px" id="mshAgentToggles"></div>
+      <!-- Sliders -->
+      <div class="sl-row"><label>Blur</label><input type="range" min="4" max="100" value="32" id="mshBlur"><span class="v" id="mshBlurV">32</span></div>
+      <div class="sl-row"><label>Reach</label><input type="range" min="0" max="80" value="22" id="mshReach"><span class="v" id="mshReachV">22</span></div>
+      <div class="sl-row"><label>Opacity</label><input type="range" min="5" max="100" value="85" id="mshOp"><span class="v" id="mshOpV">85</span></div>
+      <div class="sl-row"><label>Layers</label><input type="range" min="1" max="6" value="3" id="mshLayers"><span class="v" id="mshLayersV">3</span></div>
+      <div class="sl-row"><label>Speed</label><input type="range" min="1" max="10" value="5" id="mshSpd"><span class="v" id="mshSpdV">5</span></div>
+      <div class="sl-row"><label>Decay</label><input type="range" min="1" max="20" value="6" id="mshDecay"><span class="v" id="mshDecayV">6</span></div>
+    </div>
+
+    <!-- PANEL 3: BADGE + VIDEO + TEXT -->
+    <div class="panel" style="display:flex;flex-direction:column;gap:0">
+      <!-- Badge -->
       <div class="panel-hdr"><span class="panel-title">Badge (#ID)</span><button class="toggle" id="badgeToggle" onclick="toggleBadge()">OFF</button></div>
       <div id="badgeCtrls" style="display:none">
         <div class="sl-row"><label>BG</label><input type="color" value="#000000" id="bdBg" oninput="upd()"></div>
         <div class="sl-row"><label>Text</label><input type="color" value="#ffffff" id="bdTx" oninput="upd()"></div>
       </div>
+      <!-- Divider -->
+      <div style="border-top:1px solid var(--border);margin:8px 0 6px"></div>
+      <!-- Video Export -->
+      <div style="font-size:7px;text-transform:uppercase;letter-spacing:.12em;color:var(--pink);margin-bottom:6px">Video / GIF</div>
+      <div style="display:flex;gap:2px;margin-bottom:5px">
+        <button class="toggle active" id="vres1080" onclick="setVRes(1080,this)">1080p</button>
+        <button class="toggle" id="vres4k" onclick="setVRes(2160,this)">4K</button>
+        <button class="toggle active" id="vfmtWebm" onclick="setVFmt('webm',this)">WebM</button>
+        <button class="toggle" id="vfmtGif" onclick="setVFmt('gif',this)">GIF</button>
+      </div>
+      <div style="display:flex;gap:3px;margin-bottom:4px;align-items:center">
+        <span style="font-size:6px;color:var(--dim)">Max</span>
+        <button class="toggle active" id="vdur30" onclick="setVDur(30,this)">30s</button>
+        <button class="toggle" id="vdur120" onclick="setVDur(120,this)">2min</button>
+        <span id="vTimerDisp" style="font-size:9px;color:var(--pink);margin-left:auto">00:00</span>
+      </div>
+      <div style="display:flex;gap:3px">
+        <button class="toggle" id="vidRecBtn" onclick="toggleVidRec()" style="flex:1">⏺ Record</button>
+        <button class="toggle" id="vidDlBtn" onclick="downloadVid()" style="flex:1;opacity:.3" disabled>↓ DL</button>
+      </div>
+      <div style="font-size:7px;color:var(--dim);margin-top:4px" id="vidStatusLbl">Ready</div>
+      <!-- Divider -->
+      <div style="border-top:1px solid var(--border);margin:8px 0 6px"></div>
+      <!-- Text Tool -->
+      <div style="font-size:7px;text-transform:uppercase;letter-spacing:.12em;color:var(--teal);margin-bottom:5px">Text Layer</div>
+      <input id="toTextInput" placeholder="Add text..." style="width:100%;padding:4px 6px;background:#060610;border:1px solid var(--border2);color:var(--text);font-family:'Courier New',monospace;font-size:9px;outline:none;margin-bottom:5px" oninput="updateTextLayer()"/>
+      <div style="display:flex;gap:2px;margin-bottom:4px;flex-wrap:wrap">
+        <button class="toggle active" id="tStyleNorm" onclick="setTStyle('normal',this)">Normal</button>
+        <button class="toggle" id="tStyleGlow" onclick="setTStyle('glow',this)">Glow</button>
+        <button class="toggle" id="tStyleOutline" onclick="setTStyle('outline',this)">Outline</button>
+        <button class="toggle" id="tStyleShadow" onclick="setTStyle('shadow',this)">Shadow</button>
+        <button class="toggle" id="tStyleComic" onclick="setTStyle('comic',this)">Comic</button>
+        <button class="toggle" id="tAnim" onclick="toggleTAnim()">Animate</button>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center;margin-bottom:4px;flex-wrap:wrap">
+        <label style="font-size:6px;color:var(--dim)">Size</label>
+        <input type="range" min="10" max="120" value="36" id="toSize" oninput="document.getElementById('toSizeV').textContent=this.value;updateTextLayer()" style="width:50px;accent-color:var(--teal)"/>
+        <span style="font-size:6px;color:#445;width:18px" id="toSizeV">36</span>
+        <input type="color" value="#e5e5f0" id="toColor" oninput="updateTextLayer()" style="height:16px;width:24px;border:1px solid var(--border2);cursor:pointer"/>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center;margin-bottom:4px">
+        <label style="font-size:6px;color:var(--dim)">Y %</label>
+        <input type="range" min="5" max="95" value="82" id="toY" oninput="document.getElementById('toYV').textContent=this.value+'%';updateTextLayer()" style="flex:1;accent-color:var(--teal)"/>
+        <span style="font-size:6px;color:#445;width:22px" id="toYV">82%</span>
+      </div>
+      <div style="display:flex;gap:2px">
+        <button class="toggle active" id="taLeft" onclick="setTA('left',this)">←</button>
+        <button class="toggle" id="taCenter" onclick="setTA('center',this)">↔</button>
+        <button class="toggle" id="taRight" onclick="setTA('right',this)">→</button>
+        <span style="font-size:6px;color:var(--dim);align-self:center;margin-left:4px">Align</span>
+      </div>
     </div>
+
   </div>
   <span class="sec-lbl">Canvas order</span>
   <div class="strip" id="strip"><span style="color:#223;font-size:8px;padding:3px">No agents on canvas.</span></div>
@@ -2482,12 +2574,6 @@ function drawTextOverlay(ctx){
 // ═══════════════════════════════════════════════════════════════
 //  VIDEO / GIF RECORDING
 // ═══════════════════════════════════════════════════════════════
-let vidRes=1080,vidFmt='webm',vidRecording=false;
-let vidStream=null,vidRec=null,vidChunks=[],vidBlob=null;
-let vidTimerInt=null,vidSecs=0;
-// GIF frames
-let gifFrames=[],gifCapInt=null;
-
 function setVidRes(r,btn){
   vidRes=r;
   document.querySelectorAll('[id^="resBtn"]').forEach(b=>b.classList.remove('active'));
@@ -2611,6 +2697,260 @@ function downloadVid(){
   a.download=`booa-${vidRes}p-${Date.now()}.${ext}`;
   a.click();
 }
+
+
+// ═══════════════════════════════════════════════════════════════
+//  MUSIC SHADOW — per-agent type + UI builders
+// ═══════════════════════════════════════════════════════════════
+let agentMshType={}; // agId → MSH type index (0-5)
+
+// Build the 6-button type grid in panel 2
+function buildMshTypeGrid(){
+  const el=document.getElementById('mshTypeGrid');if(!el)return;
+  el.innerHTML=MSH_TYPES.map((t,i)=>`
+    <button class="msh-type" id="mshTypeBtn_${i}" onclick="setGlobalMshType(${i})" title="${t.desc}"
+      style="padding:3px 0;border:1px solid ${t.color}44;background:transparent;color:${t.color}88;font-family:inherit;font-size:6px;cursor:pointer;text-transform:uppercase;transition:all .12s">
+      ${t.name}
+    </button>`).join('');
+}
+
+// Set ALL agents to one shadow type
+function setGlobalMshType(idx){
+  allAgents().forEach(ag=>{agentMshType[ag.id]=idx;});
+  document.querySelectorAll('[id^="mshTypeBtn_"]').forEach((b,i)=>{
+    b.style.background=i===idx?`rgba(136,126,203,.2)`:'transparent';
+    b.style.color=MSH_TYPES[i].color+(i===idx?'':'66');
+  });
+  buildMshAgentToggles();
+}
+
+// Per-agent pills showing their assigned type
+function buildMshAgentToggles(){
+  const el=document.getElementById('mshAgentToggles');if(!el)return;
+  const agents=allAgents();if(!agents.length){el.innerHTML='<span style="font-size:7px;color:var(--dim)">Load agents first</span>';return;}
+  el.innerHTML=agents.map(ag=>{
+    const ti=agentMshType[ag.id]??0;
+    const t=MSH_TYPES[ti];
+    const isGhost=agentMshGhost[ag.id];
+    return `<div style="display:flex;align-items:center;gap:2px;margin-bottom:3px;width:100%">
+      ${ag.svg?`<img src="data:image/svg+xml,${encodeURIComponent(ag.svg)}" style="width:14px;height:14px;image-rendering:pixelated;border:1px solid ${t.color}44;flex-shrink:0"/>`:''}
+      <button onclick="cycleAgentMshType('${ag.id}')" style="flex:1;padding:1px 4px;border:1px solid ${t.color}55;background:${t.color}11;color:${t.color};font-family:inherit;font-size:6px;cursor:pointer;text-transform:uppercase;text-align:left;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">#${ag.id} ${t.name}</button>
+      <button onclick="toggleAgentGhost('${ag.id}')" style="padding:1px 4px;border:1px solid ${isGhost?'var(--pink)':'var(--border2)'};background:${isGhost?'rgba(194,122,144,.1)':'transparent'};color:${isGhost?'var(--pink)':'var(--dim)'};font-family:inherit;font-size:6px;cursor:pointer;flex-shrink:0" title="Ghost — hide agent, shadow only">${isGhost?'👁‍🗨':'👁'}</button>
+    </div>`;
+  }).join('');
+}
+
+// Cycle through 6 types per agent click
+let agentMshGhost={};
+function cycleAgentMshType(agId){
+  agentMshType[agId]=((agentMshType[agId]??0)+1)%MSH_TYPES.length;
+  buildMshAgentToggles();
+}
+function toggleAgentGhost(agId){
+  agentMshGhost[agId]=!agentMshGhost[agId];
+  buildMshAgentToggles();
+}
+
+// Override getMSHType to use per-agent assignment
+function getMSHType(agId){
+  const idx=agentMshType[agId]??0;
+  return MSH_TYPES[Math.min(idx,MSH_TYPES.length-1)];
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  VIDEO / GIF — resolution, format, duration
+// ═══════════════════════════════════════════════════════════════
+let vidRes=1080, vidFmtChoice='webm', vidDur=30;
+let vidRecActive=false, vidStream=null, vidRec=null, vidChunks=[], vidBlob=null;
+let vidTimerInt=null, vidSecs=0;
+let gifFrames=[], gifCapInt=null;
+
+function setVRes(r,btn){
+  vidRes=r;
+  ['vres1080','vres4k'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+}
+function setVFmt(f,btn){
+  vidFmtChoice=f;
+  ['vfmtWebm','vfmtGif'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+}
+function setVDur(d,btn){
+  vidDur=d;
+  ['vdur30','vdur120'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+}
+
+async function toggleVidRec(){
+  if(vidRecActive)await stopVidRec(); else await startVidRec();
+}
+
+async function startVidRec(){
+  const scale=vidRes===2160?4:2;
+  const offW=CW*scale, offH=CH*scale;
+  const off=document.createElement('canvas');off.width=offW;off.height=offH;
+  const offCtx=off.getContext('2d');
+  vidChunks=[];gifFrames=[];vidBlob=null;vidRecActive=true;vidSecs=0;
+  const btn=document.getElementById('vidRecBtn');
+  if(btn){btn.textContent='■ Stop';btn.style.borderColor='#f44';btn.style.color='#f44';}
+  const statusEl=document.getElementById('vidStatusLbl');
+  if(statusEl)statusEl.textContent=`Recording ${vidRes===2160?'4K':'1080p'} ${vidFmtChoice.toUpperCase()}...`;
+  // Timer
+  vidTimerInt=setInterval(()=>{
+    vidSecs++;
+    const m=Math.floor(vidSecs/60),s=vidSecs%60;
+    const el=document.getElementById('vTimerDisp');
+    if(el)el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if(vidSecs>=vidDur)stopVidRec();
+  },1000);
+  // Start music if not already playing
+  if(!isPlaying)togglePlay();
+  if(vidFmtChoice==='gif'){
+    const fps=vidRes===2160?15:15;
+    gifCapInt=setInterval(()=>{
+      offCtx.clearRect(0,0,offW,offH);
+      offCtx.drawImage(bCvs,0,0,offW,offH);
+      gifFrames.push(off.toDataURL('image/png'));
+    },1000/fps);
+  } else {
+    const drawLoop=()=>{if(!vidRecActive)return;offCtx.clearRect(0,0,offW,offH);offCtx.drawImage(bCvs,0,0,offW,offH);requestAnimationFrame(drawLoop);};
+    drawLoop();
+    const fps=30;
+    const mt=MediaRecorder.isTypeSupported('video/webm;codecs=vp9')?'video/webm;codecs=vp9':'video/webm';
+    const bps=vidRes===2160?40000000:12000000;
+    vidStream=off.captureStream(fps);
+    vidRec=new MediaRecorder(vidStream,{mimeType:mt,videoBitsPerSecond:bps});
+    vidRec.ondataavailable=e=>{if(e.data?.size>0)vidChunks.push(e.data);};
+    vidRec.onstop=()=>{
+      vidBlob=new Blob(vidChunks,{type:mt});
+      const dlBtn=document.getElementById('vidDlBtn');if(dlBtn){dlBtn.disabled=false;dlBtn.style.opacity='1';}
+      if(statusEl)statusEl.textContent=`✓ ${vidRes===2160?'4K':'1080p'} ready · ${(vidBlob.size/1024/1024).toFixed(1)}MB`;
+    };
+    vidRec.start(100);
+  }
+}
+
+async function stopVidRec(){
+  vidRecActive=false;
+  clearInterval(vidTimerInt);clearInterval(gifCapInt);
+  const btn=document.getElementById('vidRecBtn');
+  if(btn){btn.textContent='⏺ Record';btn.style.borderColor='';btn.style.color='';}
+  if(vidFmtChoice==='gif'){
+    if(!gifFrames.length)return;
+    const statusEl=document.getElementById('vidStatusLbl');
+    if(statusEl)statusEl.textContent=`Building GIF (${gifFrames.length} frames)...`;
+    await buildAnimWebmFromFrames();
+  } else {
+    await new Promise(r=>setTimeout(r,350));
+    vidRec?.stop();
+    vidStream?.getTracks().forEach(t=>t.stop());
+  }
+}
+
+async function buildAnimWebmFromFrames(){
+  const scale=vidRes===2160?4:2;
+  const cvs=document.createElement('canvas');cvs.width=CW*scale;cvs.height=CH*scale;
+  const ctx=cvs.getContext('2d');
+  const fps=15;
+  const mt='video/webm';
+  const stream=cvs.captureStream(fps);
+  const rec=new MediaRecorder(stream,{mimeType:mt,videoBitsPerSecond:vidRes===2160?20000000:8000000});
+  const chunks=[];
+  rec.ondataavailable=e=>{if(e.data?.size>0)chunks.push(e.data);};
+  rec.onstop=()=>{
+    vidBlob=new Blob(chunks,{type:mt});
+    const dlBtn=document.getElementById('vidDlBtn');if(dlBtn){dlBtn.disabled=false;dlBtn.style.opacity='1';}
+    const statusEl=document.getElementById('vidStatusLbl');
+    if(statusEl)statusEl.textContent=`✓ GIF/WebM ready · ${gifFrames.length} frames · ${(vidBlob.size/1024/1024).toFixed(1)}MB`;
+  };
+  rec.start();
+  for(let i=0;i<gifFrames.length;i++){
+    await new Promise(r=>{const img=new Image();img.onload=()=>{ctx.drawImage(img,0,0,cvs.width,cvs.height);r();};img.src=gifFrames[i];});
+    await new Promise(r=>setTimeout(r,1000/fps));
+  }
+  rec.stop();stream.getTracks().forEach(t=>t.stop());
+}
+
+function downloadVid(){
+  if(!vidBlob)return;
+  const ext=vidFmtChoice==='gif'?'webm':'webm';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(vidBlob);
+  a.download=`booa-${vidRes===2160?'4k':'1080p'}-${Date.now()}.${ext}`;
+  a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TEXT LAYER — Khora comic style
+// ═══════════════════════════════════════════════════════════════
+let tStyle='normal', tAnimate=false, tAnimTick=0, tAlign='left';
+
+function updateTextLayer(){drawBanner();}
+function setTStyle(s,btn){
+  tStyle=s;
+  document.querySelectorAll('[id^="tStyle"]').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  drawBanner();
+}
+function toggleTAnim(){
+  tAnimate=!tAnimate;
+  const btn=document.getElementById('tAnim');
+  if(btn){btn.textContent=tAnimate?'Anim ON':'Animate';btn.classList.toggle('active',tAnimate);}
+}
+function setTA(a,btn){
+  tAlign=a;
+  ['taLeft','taCenter','taRight'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  drawBanner();
+}
+
+function drawTextOverlay(ctx){
+  const txtEl=document.getElementById('toTextInput');
+  const txt=(txtEl?.value||'').toUpperCase().trim();
+  if(!txt)return;
+  const size=+(document.getElementById('toSize')?.value||36);
+  const yPct=+(document.getElementById('toY')?.value||82)/100;
+  const color=document.getElementById('toColor')?.value||'#e5e5f0';
+  const y=Math.round(CH*yPct);
+  let x;
+  ctx.save();
+  ctx.imageSmoothingEnabled=true;
+  ctx.font=`bold ${size}px 'Courier New',monospace`;
+  ctx.letterSpacing='0.15em';
+  ctx.textBaseline='middle';
+  // Animate
+  if(tAnimate){ctx.globalAlpha=0.65+Math.sin(tAnimTick*0.07)*0.35;}
+  // Align
+  if(tAlign==='center'){ctx.textAlign='center';x=CW/2;}
+  else if(tAlign==='right'){ctx.textAlign='right';x=CW-50;}
+  else{ctx.textAlign='left';x=50;}
+  // Styles
+  if(tStyle==='glow'){
+    ctx.shadowColor=color;ctx.shadowBlur=24;
+    ctx.fillStyle=color;ctx.fillText(txt,x,y);
+    ctx.shadowBlur=48;ctx.fillText(txt,x,y);
+    ctx.shadowBlur=0;
+  } else if(tStyle==='outline'){
+    ctx.lineWidth=Math.max(2,size*0.06);
+    ctx.strokeStyle=color;ctx.strokeText(txt,x,y);
+    ctx.fillStyle='#050508';ctx.fillText(txt,x,y);
+  } else if(tStyle==='shadow'){
+    ctx.fillStyle='rgba(0,0,0,0.7)';
+    ctx.fillText(txt,x+Math.round(size*0.07),y+Math.round(size*0.07));
+    ctx.fillStyle=color;ctx.fillText(txt,x,y);
+  } else if(tStyle==='comic'){
+    // Comic: white outline + dark fill + dramatic shadow
+    ctx.lineWidth=Math.max(3,size*0.1);
+    ctx.strokeStyle='#ffffff';ctx.strokeText(txt,x,y);
+    ctx.strokeStyle='#000000';ctx.lineWidth=Math.max(1,size*0.04);ctx.strokeText(txt,x,y);
+    ctx.fillStyle=color;ctx.fillText(txt,x,y);
+  } else {
+    ctx.fillStyle=color;ctx.fillText(txt,x,y);
+  }
+  ctx.globalAlpha=1;ctx.shadowBlur=0;ctx.restore();
+}
+// Continuous text animation tick
+(function tAnimLoop(){requestAnimationFrame(tAnimLoop);if(tAnimate){tAnimTick++;drawBanner();}})();
 
 // ═══════════════════════════════════════════════════════════════
 //  INIT
