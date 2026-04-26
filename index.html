@@ -268,6 +268,107 @@ input[type=range]{accent-color:var(--purple);cursor:pointer}
 .clip-len-btn{padding:1px 5px;border:1px solid var(--border);background:transparent;color:#334;font-family:inherit;font-size:6px;cursor:pointer;text-transform:uppercase}
 .clip-len-btn.active{background:#1a1a2a;color:#aab;border-color:#558}
 .master-clips-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
+
+/* TRAIT DISPLAY */
+.trait-badge{display:inline-block;padding:2px 6px;border:1px solid #223;font-size:6px;text-transform:uppercase;letter-spacing:.08em;margin:1px;cursor:default;transition:all .2s}
+.trait-badge:hover{border-color:var(--purple)}
+.mixer-traits{display:flex;flex-wrap:wrap;gap:1px;margin-bottom:4px;min-height:10px}
+.trait-panel{border:1px solid var(--border);padding:10px;margin-bottom:10px;background:rgba(3,3,10,.9)}
+.trait-agent-row{display:flex;align-items:flex-start;gap:10px;padding:8px;border-bottom:1px solid var(--border);transition:background .2s}
+.trait-agent-row:hover{background:rgba(136,126,203,.05)}
+.trait-agent-row:last-child{border-bottom:none}
+.trait-thumb{width:36px;height:36px;image-rendering:pixelated;flex-shrink:0;border:1px solid var(--border2)}
+.trait-info{flex:1;min-width:0}
+.trait-name{font-size:8px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.trait-music-params{font-size:7px;color:#445;margin-top:3px;line-height:1.7}
+.trait-loading{font-size:8px;color:var(--purple);animation:blink .8s infinite}
+
+/* ── PIXEL FORGE PANEL ───────────────────────────────────────── */
+.pf-wrap{border:1px solid var(--border2);padding:12px;margin-bottom:10px;background:rgba(5,5,10,.9)}
+.pf-title{font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--purple);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.pf-tabs{display:flex;margin-bottom:10px}
+.pf-tab{flex:1;padding:4px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:inherit;font-size:8px;cursor:pointer;text-transform:uppercase;transition:all .1s}
+.pf-tab+.pf-tab{border-left:none}
+.pf-tab.active{background:rgba(136,126,203,.15);color:#aab;border-color:var(--purple)}
+.pf-section{display:none}
+.pf-section.active{display:block}
+.pf-prompt{width:100%;padding:7px 9px;background:#060610;border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:10px;outline:none;resize:vertical;min-height:56px;margin-bottom:6px;transition:border-color .2s}
+.pf-prompt:focus{border-color:var(--purple)}
+.pf-prompt::placeholder{color:#2a2a3a}
+.pf-key{width:100%;padding:6px 9px;background:#060610;border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:9px;outline:none;margin-bottom:8px;transition:border-color .2s}
+.pf-key:focus{border-color:var(--purple)}
+.pf-key::placeholder{color:#2a2a3a}
+.pf-btn{width:100%;padding:7px;border:1px solid var(--purple);background:rgba(136,126,203,.1);color:#aab;font-family:inherit;font-size:9px;cursor:pointer;text-transform:uppercase;letter-spacing:.1em;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.pf-btn:hover:not(:disabled){background:rgba(136,126,203,.2);color:#fff}
+.pf-btn:disabled{opacity:.4;cursor:default}
+.pf-preview{width:100%;aspect-ratio:1;image-rendering:pixelated;border:1px solid var(--border2);background:repeating-conic-gradient(#111118 0% 25%,#0a0a14 0% 50%) 0 0/12px 12px;display:block;margin:8px 0;cursor:pointer}
+.pf-presets{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px}
+.pf-preset{padding:2px 8px;border:1px solid var(--border2);background:transparent;color:var(--dim);font-family:inherit;font-size:7px;cursor:pointer;text-transform:uppercase;transition:all .1s}
+.pf-preset:hover{color:#aab;border-color:#558}
+.pf-status{font-size:8px;color:var(--purple);min-height:14px;margin-bottom:4px;animation:blink .8s infinite}
+.pf-status.ok{color:var(--green);animation:none}
+.pf-status.err{color:#f44;animation:none}
+
+/* ── COLOR PULSE / ACTIVE COLOR DISPLAY ──────────────────────── */
+.color-pulse-wrap{border:1px solid var(--border);padding:10px;margin-bottom:8px;background:rgba(5,5,10,.8)}
+.cp-title{font-size:7px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:7px}
+.cp-grid{display:flex;flex-wrap:wrap;gap:4px;min-height:20px}
+.cp-swatch{width:22px;height:22px;border:1px solid transparent;cursor:pointer;transition:transform .1s,box-shadow .3s;position:relative;flex-shrink:0}
+.cp-swatch:hover{transform:scale(1.2)}
+.cp-swatch.active-color{box-shadow:0 0 10px var(--sw-color,#fff);border-color:var(--sw-color,#fff);animation:swpulse 1s ease-in-out infinite}
+.cp-swatch .cp-count{position:absolute;bottom:-1px;right:-1px;font-size:5px;background:rgba(0,0,0,.7);color:#fff;padding:0 2px;line-height:1.4}
+@keyframes swpulse{0%,100%{box-shadow:0 0 6px var(--sw-color,#fff);opacity:1}50%{box-shadow:0 0 18px var(--sw-color,#fff);opacity:.8}}
+/* Canvas color pulse overlay */
+.canvas-wrap{position:relative}
+.color-overlay{position:absolute;inset:0;pointer-events:none;z-index:5}
+
+/* ── MUSIC SHADOWS ───────────────────────────────────────────── */
+.mshadow-wrap{border:1px solid var(--border2);padding:10px;margin-bottom:8px;background:rgba(5,5,10,.85)}
+.mshadow-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:5px}
+.mshadow-title{font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--purple)}
+.mshadow-toggles{display:flex;gap:4px;flex-wrap:wrap}
+.mst{padding:3px 8px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:inherit;font-size:7px;cursor:pointer;text-transform:uppercase;transition:all .1s}
+.mst:hover{color:#ccc}
+.mst.on{background:rgba(136,126,203,.15);color:#aab;border-color:var(--purple)}
+.mst.on.hide{background:rgba(194,122,144,.1);color:var(--pink);border-color:var(--pink)}
+.mst.on.static{background:rgba(201,212,135,.08);color:#C9D487;border-color:#C9D487}
+.mshadow-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px}
+.ms-row{display:flex;align-items:center;gap:5px}
+.ms-row label{font-size:7px;text-transform:uppercase;color:var(--muted);width:46px;flex-shrink:0}
+.ms-row input[type=range]{flex:1;accent-color:var(--purple)}
+.ms-row .v{font-size:7px;color:#445;width:22px;text-align:right}
+.shadow-type-ref{margin-top:8px;border-top:1px solid var(--border);padding-top:7px}
+.str-item{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid rgba(26,26,42,.5)}
+.str-item:last-child{border-bottom:none}
+.str-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.str-name{font-size:8px;width:64px;flex-shrink:0}
+.str-desc{font-size:7px;color:var(--muted);flex:1;line-height:1.5}
+
+/* ── VIDEO/GIF RECORD ────────────────────────────────────────── */
+.vidrec-wrap{border:1px solid var(--border2);padding:10px;margin-bottom:8px;background:rgba(5,5,10,.85)}
+.vidrec-title{font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--pink);margin-bottom:8px}
+.vidrec-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.vbtn{padding:4px 12px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:inherit;font-size:8px;cursor:pointer;text-transform:uppercase;transition:all .15s}
+.vbtn:hover{color:#ccc;border-color:#558}
+.vbtn.rec-on{border-color:#f44;color:#f44;background:rgba(255,68,68,.08)}
+.vbtn.primary{border-color:var(--pink);color:var(--pink);background:rgba(194,122,144,.06)}
+.vbtn:disabled{opacity:.3;cursor:default}
+.vidrec-status{font-size:8px;color:var(--muted);min-height:14px}
+.vidrec-status.rec{color:#f44;animation:blink .8s infinite}
+.vidrec-status.ok{color:var(--green)}
+
+/* ── TEXT OVERLAY (Khora style) ──────────────────────────────── */
+.text-overlay-wrap{border:1px solid var(--border2);padding:10px;margin-bottom:8px;background:rgba(5,5,10,.85)}
+.to-title{font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--teal);margin-bottom:8px}
+.to-input{width:100%;padding:6px 9px;background:#060610;border:1px solid var(--border2);color:var(--text);font-family:'Courier New',monospace;font-size:11px;outline:none;margin-bottom:6px;transition:border-color .2s}
+.to-input:focus{border-color:var(--teal)}
+.to-input::placeholder{color:#2a2a3a}
+.to-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.to-lbl{font-size:7px;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.to-btn{padding:3px 8px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:inherit;font-size:7px;cursor:pointer;text-transform:uppercase;transition:all .1s}
+.to-btn:hover{color:#ccc}
+.to-btn.active{background:rgba(106,191,198,.15);color:var(--teal);border-color:var(--teal)}
+.to-preview-lbl{font-size:7px;color:var(--dim);margin-top:4px}
 </style>
 </head>
 <body>
@@ -477,6 +578,23 @@ input[type=range]{accent-color:var(--purple);cursor:pointer}
   </div>
 
 
+
+  <!-- ON-CHAIN TRAITS → MUSIC PERSONALITY -->
+  <div class="trait-panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+      <div>
+        <div class="panel-title">On-Chain Personality → Music</div>
+        <div style="font-size:7px;color:#334;margin-top:2px">Each agent's creature · vibe · skills drive their sound character</div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <button class="tbtn" onclick="fetchAllTraits()" style="font-size:7px;padding:2px 8px">↻ Load Traits</button>
+        <button class="tbtn" onclick="autoPopulateSeqFromTraits()" style="font-size:7px;padding:2px 8px" title="Re-generates beat patterns from personality">⟳ Re-generate Beat</button>
+        <button class="tbtn" onclick="resetTraits()" style="font-size:7px;padding:2px 8px;color:#600" title="Reset to pure pixel sound">✕ Reset</button>
+      </div>
+    </div>
+    <div id="traitsPanel"><div style="font-size:8px;color:#223;padding:6px">Click "Load Traits" to fetch on-chain personalities and activate music behavior.</div></div>
+  </div>
+
   <!-- CLIP LAUNCHER / LOOP STATION -->
   <div class="clips-wrap">
     <div class="clips-header">
@@ -593,7 +711,7 @@ function switchView(v){
 // ═══════════════════════════════════════════════════════════════
 function setSt(id,msg,t){const el=document.getElementById(id);if(el){el.textContent=msg;el.className='ws'+(t?' '+t:'');}}
 async function loadWallet(){await doLoad(document.getElementById('walletAddr').value.trim(),'walletBtn','walletStatus',r=>{owned=r;buildGrid();drawBanner();});}
-async function loadMusicWallet(){await doLoad(document.getElementById('mWalletAddr').value.trim(),'mWalletBtn','mWalletStatus',r=>{musicOwned=r;refreshMusic();buildKbSelector();});}
+async function loadMusicWallet(){await doLoad(document.getElementById('mWalletAddr').value.trim(),'mWalletBtn','mWalletStatus',r=>{musicOwned=r;refreshMusic();setTimeout(()=>fetchAllTraits(),300);buildKbSelector();});}
 
 async function doLoad(addr,btnId,stId,cb){
   if(!/^0x[a-fA-F0-9]{40}$/.test(addr)){setSt(stId,'Invalid address','err');return;}
@@ -611,7 +729,7 @@ async function doLoad(addr,btnId,stId,cb){
       const bitmap=await rasterSvg(svg).catch(()=>null);
       const pixelGrid=svgToPixelGrid(svg);
       const dimg=new Image();dimg.src=surl(svg);await new Promise(r=>{dimg.onload=r;dimg.onerror=r;});
-      agentColors[tid]=agColor({pixelGrid});n++;
+      agentColors[tid]=agColor({pixelGrid});getMSHType(tid);n++;
       if(n%5===0)setSt(stId,`Loading ${n}/${data.nfts.length}...`,'loading');
       return{id:tid,name:nft.name||`BOOA #${tid}`,svg,bitmap,dimg,pixelGrid,hidden:false,vol:0.8};
     }));
@@ -656,7 +774,9 @@ function gv(id){return document.getElementById(id).value;}
 function drawBanner(){
   const DPR=devicePixelRatio||1;bCvs.width=CW*DPR;bCvs.height=CH*DPR;
   const ctx=bCvs.getContext('2d');ctx.scale(DPR,DPR);ctx.imageSmoothingEnabled=false;
-  if(bgOff)ctx.clearRect(0,0,CW,CH);else{ctx.fillStyle=customBg||bgColor;ctx.fillRect(0,0,CW,CH);}
+  if(bgOff)ctx.clearRect(0,0,CW,CH);
+  else if(pfCustomBgImg&&pfCustomBgImg.complete&&!customBg){ctx.drawImage(pfCustomBgImg,0,0,CW,CH);}
+  else{ctx.fillStyle=customBg||bgColor;ctx.fillRect(0,0,CW,CH);}
   if(!canvasAgents.length){ctx.fillStyle='#334';ctx.font='22px monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Add agents from the grid below',CW/2,CH/2);return;}
   const sh={ox:+gv('shX'),oy:+gv('shY'),blur:+gv('shB'),color:document.getElementById('shC').value,op:+gv('shO')/100};
   const bd={bg:document.getElementById('bdBg').value,tx:document.getElementById('bdTx').value};
@@ -708,7 +828,11 @@ function clearCanvas(){canvasAgents=[];selectedCA.clear();buildGrid();buildStrip
 function toggleShadow(){shadowOn=!shadowOn;const t=document.getElementById('shadowToggle');t.textContent=shadowOn?'ON':'OFF';t.classList.toggle('on',shadowOn);document.getElementById('shadowCtrls').style.display=shadowOn?'block':'none';drawBanner();}
 function toggleBadge(){badgeOn=!badgeOn;const t=document.getElementById('badgeToggle');t.textContent=badgeOn?'ON':'OFF';t.classList.toggle('on',badgeOn);document.getElementById('badgeCtrls').style.display=badgeOn?'block':'none';drawBanner();}
 function isOnCanvas(oi){return canvasAgents.some(ca=>ca.oi===oi);}
-function toggleFromGrid(oi){if(isOnCanvas(oi)){canvasAgents=canvasAgents.filter(ca=>ca.oi!==oi);selectedCA.clear();}else{const size=+gv('gsizeSlider');const off=canvasAgents.length*12%90;canvasAgents.push({oi,x:PAD+off,y:PAD+off,size});}buildGrid();buildStrip();updateSelCtrl();updatePalette();drawBanner();}
+function toggleFromGrid(oi){if(isOnCanvas(oi)){canvasAgents=canvasAgents.filter(ca=>ca.oi!==oi);selectedCA.clear();}else{const size=+gv('gsizeSlider');const off=canvasAgents.length*12%90;canvasAgents.push({oi,x:PAD+off,y:PAD+off,size});}buildGrid();buildStrip();updateSelCtrl();updatePalette();drawBanner();updateColorPulse();
+  // Quietly fetch traits for newly added agent
+  if(!isOnCanvas(oi)&&owned[oi]&&!agentTraits[owned[oi].id]){
+    fetchTraitsForAgent(owned[oi]).then(()=>renderTraitsPanel());
+  }}
 function toggleHide(oi){owned[oi].hidden=!owned[oi].hidden;buildGrid();drawBanner();updatePalette();}
 function buildGrid(){
   const g=document.getElementById('agentGrid');g.innerHTML='';
@@ -818,25 +942,49 @@ function buildEQUI(){
 // ── Play a pixel row ──────────────────────────────────────────
 function playRow(ag,row,volScale,pitch,flashColor){
   if(!ag||!ag.pixelGrid)return;
-  const atk=0.005+(+gv('fxAtk')/100*0.495);const dcy=0.05+(+gv('fxDcy')/100*0.95);
-  const cc=new Map();for(let x=0;x<64;x++){const c=ag.pixelGrid[row][x];if(c!==0)cc.set(c,(cc.get(c)||0)+1);}
+
+  // ── Pull trait-based music profile if loaded ──────────────
+  const profile=agentMusicProfile[ag.id];
+  const traitWave=profile?.wave||null;
+  const traitPitch=(pitch??0)+(profile?.octave??0);
+  const traitVolMult=profile?.vol??1;
+  // Trait-adjusted attack/decay override FX sliders slightly
+  const atkBase=0.005+(+gv('fxAtk')/100*0.495);
+  const dcyBase=0.05+(+gv('fxDcy')/100*0.95);
+  const atk=profile?atkBase*(0.5+profile.attack/100*0.8):atkBase;
+  const dcy=profile?dcyBase*(0.5+profile.decay/100*0.8):dcyBase;
+
+  const cc=new Map();
+  for(let x=0;x<64;x++){const c=ag.pixelGrid[row][x];if(c!==0)cc.set(c,(cc.get(c)||0)+1);}
   const sorted=[...cc.entries()].sort((a,b)=>b[1]-a[1]).slice(0,4);
   let played=false;
+
   for(const[ci,count]of sorted){
-    let freq=COLOR_NOTES[ci];if(freq===0)continue;if(pitch)freq*=Math.pow(2,pitch);
+    let freq=COLOR_NOTES[ci];if(freq===0)continue;
+    if(traitPitch)freq*=Math.pow(2,traitPitch);
     const osc=actx.createOscillator();const g=actx.createGain();
-    osc.type=COLOR_WAVE[ci];osc.frequency.value=freq;
-    const vol=Math.min((count/64)*COLOR_BRIGHTNESS[ci]*1.5,0.4)*(agentVols[ag.id]??0.8)*volScale;
+    // Trait wave overrides C64 wave (personality over pixel data)
+    osc.type=traitWave||COLOR_WAVE[ci];
+    osc.frequency.value=freq;
+    const vol=Math.min((count/64)*COLOR_BRIGHTNESS[ci]*1.5,0.4)*(agentVols[ag.id]??0.8)*volScale*traitVolMult;
     const now=actx.currentTime;
-    g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(vol,now+atk);g.gain.setValueAtTime(vol,now+atk);g.gain.exponentialRampToValueAtTime(0.001,now+dcy);
-    osc.connect(g);g.connect(masterGain);osc.start(now);osc.stop(now+dcy+0.01);played=true;
+    g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(vol,now+atk);
+    g.gain.setValueAtTime(vol,now+atk);g.gain.exponentialRampToValueAtTime(0.001,now+dcy);
+    osc.connect(g);g.connect(masterGain);osc.start(now);osc.stop(now+dcy+0.01);
+    played=true;
   }
-  if(cc.size>=6){const bs=actx.sampleRate*0.05;const buf=actx.createBuffer(1,bs,actx.sampleRate);const dat=buf.getChannelData(0);for(let i=0;i<bs;i++)dat[i]=(Math.random()*2-1)*0.3;const ns=actx.createBufferSource();ns.buffer=buf;const ng=actx.createGain();ng.gain.setValueAtTime(0.04,actx.currentTime);ng.gain.linearRampToValueAtTime(0,actx.currentTime+0.05);ns.connect(ng);ng.connect(masterGain);ns.start(actx.currentTime);}
-  // Flash BOOA glow
+  if(cc.size>=6){
+    const bs=actx.sampleRate*0.05;const buf=actx.createBuffer(1,bs,actx.sampleRate);
+    const dat=buf.getChannelData(0);for(let i=0;i<bs;i++)dat[i]=(Math.random()*2-1)*0.3;
+    const ns=actx.createBufferSource();ns.buffer=buf;
+    const ng=actx.createGain();ng.gain.setValueAtTime(0.04,actx.currentTime);ng.gain.linearRampToValueAtTime(0,actx.currentTime+0.05);
+    ns.connect(ng);ng.connect(masterGain);ns.start(actx.currentTime);
+  }
   if(played){
     const color=flashColor||agentColors[ag.id]||'#887ECB';
     flashAgent(ag.id,color);
     flashClubLight(color);
+    triggerMShadow(ag.id);// ← music → shadow link
   }
 }
 
@@ -958,12 +1106,20 @@ function seqTick(){
     if(!seqGrid[ag.id]?.[step])return;
     let xv=1;const side=xfSide[ag.id];if(side==='A')xv=(100-xfPos)/100;else if(side==='B')xv=xfPos/100;
     const pitch=agentPitch[ag.id]??0;
-    playRow(ag,bestRow(ag),vs*xv,pitch,agentColors[ag.id]);
+    // Trait density: low-density agents may ghost steps (play softer)
+    const density=agentMusicProfile[ag.id]?.density;
+    const ghostVol=(density&&density<0.4)?density*2:1;
+    playRow(ag,bestRow(ag),vs*xv*ghostVol,pitch,agentColors[ag.id]);
     // Row preview update
     const mrp=document.getElementById(`mrp_${ag.id}`);
     if(mrp){const segs=mrp.querySelectorAll('.mrp-s');const gr=ag.pixelGrid[bestRow(ag)]||[];const sw2=Math.floor(64/segs.length);segs.forEach((s2,i)=>{const ci=gr[i*sw2]||0;s2.style.background=ci>0?`#${C64_HEX[ci]}`:'#0a0a12';});}
   });
-  seqInterval=setTimeout(seqTick,(60/bpm)*1000/4);
+  // Use fastest agent's tempoMult for overall tick rate
+  // (individual agents skip steps based on their own density via seqGrid)
+  const tempos=playingAgents().map(ag=>agentMusicProfile[ag.id]?.tempoMult||1);
+  const topTempo=tempos.length?Math.max(...tempos):1;
+  const tickMs=(60/bpm)*1000/4/Math.max(1,topTempo*0.5+0.5);
+  seqInterval=setTimeout(seqTick,tickMs);
 }
 
 function startPlay(){ensureCtx();musicStopFlag=false;seqStep=-1;seqTick();isPlaying=true;setMSt('LIVE','#5CAB5E');}
@@ -1223,6 +1379,7 @@ function refreshMusic(){
     const agid=JSON.stringify(ag.id);
     card.innerHTML=`${ag.svg?`<img class="mixer-thumb" id="mthumb_${ag.id}" src="${surl(ag.svg)}" style="--agent-color:${color}"/>`:''}
 <div class="mixer-name" style="color:${color}44;">${ag.name||'#'+ag.id}</div>
+<div class="mixer-traits" id="mtraits_${ag.id}" style="min-height:8px"></div>
 <div class="mrp" id="mrp_${ag.id}">${'<div class="mrp-s"></div>'.repeat(16)}</div>
 <div class="mv-row"><label>VOL</label><input type="range" min="0" max="100" value="${Math.round((agentVols[ag.id]??0.8)*100)}" style="flex:1;accent-color:${color}" oninput="agentVols[${agid}]=+this.value/100"></div>
 <div style="font-size:6px;color:#334;margin:3px 0 2px;text-transform:uppercase">Speed</div>
@@ -1505,6 +1662,956 @@ async function exportAllClips() {
 }
 
 
+
+// ═══════════════════════════════════════════════════════════════
+//  ON-CHAIN TRAITS → MUSIC PERSONALITY ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+let agentTraits = {}; // id → {creature, vibe, personality[], skills[], domains[]}
+let agentMusicProfile = {}; // id → computed music params
+
+// Trait → Music mapping rules (derived from Khora's on-chain data)
+const VIBE_MAP = {
+  // Vibe → { waveform preference, tempo multiplier, reverb, octave preference }
+  'ethereal':    { wave:'sine',     tempoMult:0.75, reverb:80, octave:1,  attack:5,  decay:80 },
+  'aggressive':  { wave:'sawtooth', tempoMult:1.5,  reverb:10, octave:-1, attack:0,  decay:20 },
+  'melancholic': { wave:'triangle', tempoMult:0.8,  reverb:60, octave:0,  attack:20, decay:70 },
+  'chaotic':     { wave:'square',   tempoMult:1.8,  reverb:20, octave:0,  attack:0,  decay:15 },
+  'cosmic':      { wave:'sine',     tempoMult:0.6,  reverb:90, octave:1,  attack:30, decay:90 },
+  'ancient':     { wave:'sawtooth', tempoMult:0.7,  reverb:70, octave:-1, attack:15, decay:85 },
+  'mechanical':  { wave:'square',   tempoMult:1.4,  reverb:5,  octave:0,  attack:0,  decay:25 },
+  'mystical':    { wave:'triangle', tempoMult:0.85, reverb:75, octave:1,  attack:25, decay:75 },
+  'playful':     { wave:'sine',     tempoMult:1.2,  reverb:30, octave:1,  attack:5,  decay:40 },
+  'dark':        { wave:'sawtooth', tempoMult:0.9,  reverb:50, octave:-1, attack:10, decay:60 },
+  'digital':     { wave:'square',   tempoMult:1.3,  reverb:15, octave:0,  attack:0,  decay:30 },
+  'organic':     { wave:'triangle', tempoMult:1.0,  reverb:40, octave:0,  attack:15, decay:55 },
+};
+
+const CREATURE_MAP = {
+  // Creature type → step density pattern
+  'beast':    { density:0.45, swing:0.3, preferred_rows:'mid' },
+  'spirit':   { density:0.2,  swing:0.1, preferred_rows:'high' },
+  'machine':  { density:0.6,  swing:0,   preferred_rows:'all' },
+  'void':     { density:0.15, swing:0.2, preferred_rows:'low' },
+  'entity':   { density:0.35, swing:0.15,preferred_rows:'all' },
+  'construct':{ density:0.55, swing:0.05,preferred_rows:'mid' },
+  'specter':  { density:0.25, swing:0.2, preferred_rows:'high' },
+  'cipher':   { density:0.5,  swing:0,   preferred_rows:'all' },
+};
+
+const SKILL_MAP = {
+  // Skill keywords → music effect
+  'stealth':  { vol: 0.4 },
+  'combat':   { vol: 0.9, octave: -1 },
+  'healing':  { reverb: 70, wave: 'sine' },
+  'hacking':  { wave: 'square', attack: 0 },
+  'illusion': { reverb: 80, octave: 1 },
+  'speed':    { tempoMult: 1.6 },
+  'strength': { vol: 1.0, octave: -1 },
+  'wisdom':   { decay: 80, reverb: 50 },
+  'chaos':    { tempoMult: 2.0, wave: 'sawtooth' },
+  'time':     { tempoMult: 0.5, decay: 90 },
+  'fire':     { wave: 'sawtooth', attack: 0, vol: 0.85 },
+  'ice':      { wave: 'triangle', reverb: 60, decay: 70 },
+  'shadow':   { vol: 0.5, octave: -1, reverb: 40 },
+  'light':    { wave: 'sine', octave: 1, vol: 0.7 },
+};
+
+function computeMusicProfile(traits) {
+  const profile = {
+    wave: 'sine', octave: 0, tempoMult: 1.0,
+    reverb: 20, attack: 10, decay: 40,
+    density: 0.3, swing: 0.1, vol: 0.8,
+    label: '', color: null,
+  };
+
+  // Apply vibe
+  const vibeLow = (traits.vibe || '').toLowerCase();
+  for (const [key, params] of Object.entries(VIBE_MAP)) {
+    if (vibeLow.includes(key)) {
+      Object.assign(profile, params);
+      break;
+    }
+  }
+
+  // Apply creature
+  const creatLow = (traits.creature || '').toLowerCase();
+  for (const [key, params] of Object.entries(CREATURE_MAP)) {
+    if (creatLow.includes(key)) {
+      Object.assign(profile, params);
+      break;
+    }
+  }
+
+  // Apply skills (accumulate effects)
+  for (const skill of (traits.skills || [])) {
+    const skillLow = skill.toLowerCase();
+    for (const [key, params] of Object.entries(SKILL_MAP)) {
+      if (skillLow.includes(key)) {
+        // Average in the effect
+        if (params.vol) profile.vol = (profile.vol + params.vol) / 2;
+        if (params.octave) profile.octave = Math.max(-1, Math.min(1, profile.octave + params.octave));
+        if (params.reverb) profile.reverb = (profile.reverb + params.reverb) / 2;
+        if (params.tempoMult) profile.tempoMult = (profile.tempoMult + params.tempoMult) / 2;
+        if (params.wave) profile.wave = params.wave;
+        if (params.attack !== undefined) profile.attack = (profile.attack + params.attack) / 2;
+      }
+    }
+  }
+
+  // Build label
+  const parts = [];
+  if (traits.vibe) parts.push(traits.vibe);
+  if (traits.creature) parts.push(traits.creature);
+  profile.label = parts.join(' · ');
+
+  return profile;
+}
+
+async function fetchTraitsForAgent(ag) {
+  try {
+    const r = await fetch(`/api/agent-traits?tokenId=${ag.id}`);
+    if (!r.ok) throw new Error('not found');
+    const traits = await r.json();
+    agentTraits[ag.id] = traits;
+    const profile = computeMusicProfile(traits);
+    agentMusicProfile[ag.id] = profile;
+    // Apply profile to agent's mixer state
+    applyProfileToMixer(ag.id, profile);
+    return traits;
+  } catch(e) {
+    return null;
+  }
+}
+
+function applyProfileToMixer(agId, profile) {
+  // Pitch
+  agentPitch[agId] = profile.octave ?? 0;
+  // Volume
+  agentVols[agId] = Math.max(0.1, Math.min(1, profile.vol ?? 0.8));
+  // Refresh mixer card display
+  refreshMixerBtns();
+}
+
+async function fetchAllTraits() {
+  const agents = allAgents();
+  if (!agents.length) {
+    document.getElementById('traitsPanel').innerHTML = '<div style="font-size:8px;color:#f44;padding:6px">No agents loaded. Load wallet first.</div>';
+    return;
+  }
+  document.getElementById('traitsPanel').innerHTML = `<div class="trait-loading">Fetching on-chain traits for ${agents.length} agents...</div>`;
+  
+  await Promise.all(agents.map(ag => fetchTraitsForAgent(ag)));
+  renderTraitsPanel();
+  // Rebuild sequencer with trait-informed density patterns
+  autoPopulateSeqFromTraits();
+}
+
+function renderTraitsPanel() {
+  const agents = allAgents();
+  const el = document.getElementById('traitsPanel');
+  if (!agents.length) return;
+  
+  let html = '';
+  agents.forEach(ag => {
+    const traits = agentTraits[ag.id];
+    const profile = agentMusicProfile[ag.id];
+    const color = agentColors[ag.id] || '#887ECB';
+    
+    if (!traits) {
+      html += `<div class="trait-agent-row">
+        ${ag.svg ? `<img class="trait-thumb" src="${surl(ag.svg)}"/>` : ''}
+        <div class="trait-info">
+          <div class="trait-name" style="color:${color}">#${ag.id} <span style="color:#334;font-size:7px">traits unavailable</span></div>
+        </div>
+      </div>`;
+      return;
+    }
+
+    const emoji = traits.emoji || '';
+    const allTraits = [
+      ...( traits.personality || []),
+      ...( traits.skills || []).slice(0,3),
+      ...( traits.domains || []).slice(0,2),
+    ];
+
+    html += `<div class="trait-agent-row">
+      ${ag.svg ? `<img class="trait-thumb" src="${surl(ag.svg)}" style="border-color:${color}22"/>` : ''}
+      <div class="trait-info">
+        <div class="trait-name" style="color:${color}">
+          ${emoji} #${ag.id} — ${traits.name}
+        </div>
+        <div style="font-size:7px;color:#445;margin-bottom:3px">
+          ${traits.creature ? `<span style="color:${color}88">${traits.creature}</span>` : ''}
+          ${traits.vibe ? ` · <span style="color:#887ECB88">${traits.vibe}</span>` : ''}
+        </div>
+        <div class="mixer-traits">
+          ${allTraits.map(t => `<span class="trait-badge" style="border-color:${color}44;color:${color}99">${t}</span>`).join('')}
+        </div>
+        ${profile ? `<div class="trait-music-params">
+          🎵 Wave: <span style="color:#6ABFC6">${profile.wave}</span> · 
+          Pitch: <span style="color:#C9D487">${profile.octave>0?'↑Oct':profile.octave<0?'↓Oct':'Normal'}</span> · 
+          Density: <span style="color:#CB7E75">${Math.round(profile.density*100)}%</span> · 
+          Reverb: <span style="color:#887ECB">${Math.round(profile.reverb)}%</span> · 
+          Vol: <span style="color:#c27a90">${Math.round(profile.vol*100)}%</span>
+        </div>` : ''}
+      </div>
+    </div>`;
+  });
+  
+  el.innerHTML = html;
+}
+
+// Auto-populate sequencer based on creature density + vibe swing
+function autoPopulateSeqFromTraits() {
+  const agents = allAgents();
+  agents.forEach((ag, trackIdx) => {
+    const profile = agentMusicProfile[ag.id];
+    if (!profile) return;
+    const density = profile.density || 0.3;
+    // Track 0 (usually kick): heavier on beats 1,5,9,13
+    const isRhythmic = trackIdx === 0;
+    seqGrid[ag.id] = Array.from({length: numSteps}, (_, s) => {
+      if (isRhythmic && (s === 0 || s === 4 || s === 8 || s === 12)) return true;
+      if (isRhythmic && s % 2 === 0) return Math.random() < density * 0.6;
+      return Math.random() < density;
+    });
+  });
+  buildSeqGrid();
+}
+
+
+
+function resetTraits(){
+  // Clear all trait profiles — go back to pure C64 pixel sound
+  agentTraits={};agentMusicProfile={};
+  allAgents().forEach(ag=>{
+    agentPitch[ag.id]=0;
+    agentVols[ag.id]=ag.vol??0.8;
+  });
+  document.getElementById('traitsPanel').innerHTML='<div style="font-size:8px;color:#334;padding:6px">Traits cleared. Sound is back to pure pixel data.</div>';
+  refreshMixerBtns();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PIXEL FORGE — AI Layer Generator
+// ═══════════════════════════════════════════════════════════════
+const C64_PAL=['#000000','#626262','#898989','#ADADAD','#FFFFFF','#9F4E44','#CB7E75','#6D5412','#A1683C','#C9D487','#9AE29B','#5CAB5E','#6ABFC6','#887ECB','#50459B','#A057A3'];
+let pfGeneratedImage=null; // last generated image dataURL
+let pfBgImage=null;
+let colorPulseInterval=null;
+let pulsedColors=new Set(); // colors currently pulsing
+
+function pfTab(tab,btn){
+  document.querySelectorAll('.pf-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.pf-section').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pfGenerate').classList.toggle('active',tab==='generate');
+  document.getElementById('pfBackground').classList.toggle('active',tab==='background');
+  document.getElementById('pfFullbody').classList.toggle('active',tab==='fullbody');
+}
+
+function pfPreset(text){
+  // Fill whichever prompt is visible
+  const active=document.querySelector('.pf-section.active');
+  const ta=active?.querySelector('textarea');
+  if(ta)ta.value=text;
+}
+
+function pfSetStatus(id,msg,type='loading'){
+  const el=document.getElementById(id);if(!el)return;
+  el.textContent=msg;
+  el.style.animation=type==='loading'?'blink .8s infinite':'none';
+  el.style.color=type==='err'?'#f44':type==='ok'?'#5CAB5E':'#887ECB';
+}
+
+async function runPixelForge(mode){
+  const apiKey=document.getElementById('pfApiKey').value.trim();
+  if(!apiKey){pfSetStatus(mode==='overlay'?'pfStatus':mode==='background'?'pfBgStatus':'pfFbStatus','Enter your Gemini API key below','err');return;}
+
+  const promptMap={overlay:'pfPrompt',background:'pfBgPrompt',fullbody:'pfFbPrompt'};
+  const statusMap={overlay:'pfStatus',background:'pfBgStatus',fullbody:'pfFbStatus'};
+  const btnMap={overlay:'pfGenBtn',background:'pfBgBtn',fullbody:'pfFbBtn'};
+
+  const prompt=document.getElementById(promptMap[mode]).value.trim();
+  if(!prompt){pfSetStatus(statusMap[mode],'Enter a prompt first','err');return;}
+
+  const btn=document.getElementById(btnMap[mode]);
+  btn.disabled=true;btn.textContent='Generating...';
+  pfSetStatus(statusMap[mode],'Calling Gemini image model...');
+
+  // Get selected agent SVG as reference if available
+  let refImage=null;
+  if(mode==='overlay'&&selectedCA.size){
+    const caIdx=Array.from(selectedCA)[0];
+    const ag=owned[canvasAgents[caIdx]?.oi];
+    if(ag?.svg){
+      // Rasterize the SVG to get a base64 reference
+      try{
+        const bm=ag.bitmap||await rasterSvg(ag.svg).catch(()=>null);
+        if(bm){const t=document.createElement('canvas');t.width=64;t.height=64;t.getContext('2d').drawImage(bm,0,0,64,64);refImage=t.toDataURL('image/png');}
+      }catch(_){}
+    }
+  }
+
+  try{
+    const fullPrompt=buildForgePrompt(mode,prompt);
+    const imageData=await callGeminiImage(apiKey,fullPrompt,refImage);
+
+    if(mode==='background'){
+      pfBgImage=imageData;
+      const cvs=document.getElementById('pfBgPreview');
+      cvs.style.display='block';
+      document.getElementById('pfBgApplyHint').style.display='block';
+      const img=new Image();img.onload=()=>{const ctx=cvs.getContext('2d');cvs.width=64;cvs.height=64;ctx.drawImage(img,0,0,64,64);};img.src=imageData;
+      pfSetStatus(statusMap[mode],'✓ Background ready — click to apply','ok');
+    } else if(mode==='fullbody'){
+      pfGeneratedImage=imageData;
+      const cvs=document.getElementById('pfFbPreview');
+      cvs.style.display='block';
+      const img=new Image();img.onload=()=>{const ctx=cvs.getContext('2d');cvs.width=64;cvs.height=64;ctx.drawImage(img,0,0,64,64);};img.src=imageData;
+      pfSetStatus(statusMap[mode],'✓ Character ready — click image to add to canvas','ok');
+    } else {
+      // Overlay — composite onto selected agent or standalone
+      pfGeneratedImage=imageData;
+      pfSetStatus(statusMap[mode],'✓ Generated — applying to canvas','ok');
+      await addGeneratedToCanvas();
+    }
+  }catch(e){
+    pfSetStatus(statusMap[mode],'Error: '+e.message,'err');
+    console.error('Pixel Forge error:',e);
+  }
+  btn.disabled=false;btn.textContent=mode==='overlay'?'✦ Generate Overlay Layer':mode==='background'?'✦ Generate Background':'✦ Generate & Add to Canvas';
+}
+
+function buildForgePrompt(mode,userPrompt){
+  const base=`Pixel art, exactly 64x64 pixels. C64 16-color palette ONLY: ${C64_PAL.join(', ')}. Hard pixel edges, no anti-aliasing, no gradients. Background: bright green #00FF00 for chroma key.`;
+  if(mode==='overlay')return`${base} Generate a TRANSPARENT OVERLAY containing ONLY: ${userPrompt}. Do NOT draw a full character — only the item/effect requested. Place it where it belongs on a character.`;
+  if(mode==='background')return`${base} Generate a background scene: ${userPrompt}. Fill the entire 64x64 canvas. No characters, only the environment/background.`;
+  return`${base} Generate a full-body pixel art character: ${userPrompt}. Centered, full body visible, facing forward.`;
+}
+
+async function callGeminiImage(apiKey,prompt,refBase64){
+  // Call Gemini 2.0 flash image generation
+  const body={
+    contents:[{parts:[
+      ...(refBase64?[{inlineData:{data:refBase64.replace(/^data:image\/\w+;base64,/,''),mimeType:'image/png'}}]:[]),
+      {text:prompt}
+    ]}],
+    generationConfig:{responseModalities:['IMAGE','TEXT']},
+  };
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${apiKey}`,{
+    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),
+  });
+  const data=await res.json();
+  if(!res.ok)throw new Error(data.error?.message||'API error '+res.status);
+  const part=data.candidates?.[0]?.content?.parts?.find(p=>p.inlineData?.mimeType?.startsWith('image/'));
+  if(!part?.inlineData?.data)throw new Error('No image in response. Check your API key has image generation access.');
+  return 'data:image/png;base64,'+part.inlineData.data;
+}
+
+async function addGeneratedToCanvas(){
+  if(!pfGeneratedImage)return;
+  // Load and chromakey the generated image
+  const img=new Image();
+  img.onload=async()=>{
+    const t=document.createElement('canvas');t.width=64;t.height=64;
+    const ctx=t.getContext('2d');ctx.drawImage(img,0,0,64,64);
+    // Remove chroma key green
+    const id=ctx.getImageData(0,0,64,64);
+    for(let i=0;i<id.data.length;i+=4){
+      const r=id.data[i],g=id.data[i+1],b=id.data[i+2];
+      if(g>150&&r<80&&b<80){id.data[i+3]=0;}// remove green
+    }
+    ctx.putImageData(id,0,0);
+    // Quantize to C64 palette
+    quantizeToC64(ctx,t);
+    // Convert to SVG-compatible bitmap, create a fake agent entry
+    const dataUrl=t.toDataURL('image/png');
+    const bitmap=await createImageBitmap(t);
+    const pixelGrid=canvasToPixelGrid(ctx);
+    const fakeId='gen-'+Date.now();
+    const fakeAg={id:fakeId,name:'AI Generated',svg:'',bitmap,dimg:img,pixelGrid,hidden:false,vol:0.8,isGenerated:true,dataUrl};
+    agentColors[fakeId]=extractDominantColor(pixelGrid);
+    owned.push(fakeAg);
+    const size=+gv('gsizeSlider');const off=canvasAgents.length*12%90;
+    canvasAgents.push({oi:owned.length-1,x:PAD+off,y:PAD+off,size});
+    buildGrid();buildStrip();drawBanner();updatePalette();
+    showToast('AI layer added to canvas');
+  };
+  img.src=pfGeneratedImage;
+}
+
+function applyAsBannerBg(){
+  if(!pfBgImage)return;
+  const img=new Image();
+  img.onload=()=>{
+    // Draw onto an offscreen canvas, remove chroma key, use as custom BG
+    const t=document.createElement('canvas');t.width=CW;t.height=CH;
+    const ctx=t.getContext('2d');
+    // Fill base dark
+    ctx.fillStyle='#050508';ctx.fillRect(0,0,CW,CH);
+    // Tile/stretch the 64x64 bg
+    ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(img,0,0,CW,CH);
+    // Extract dominant non-green color for customBg
+    const small=document.createElement('canvas');small.width=64;small.height=64;
+    const sc=small.getContext('2d');sc.drawImage(img,0,0,64,64);
+    const id=sc.getImageData(0,0,64,64);
+    const counts=new Map();
+    for(let i=0;i<id.data.length;i+=4){
+      const r=id.data[i],g=id.data[i+1],b=id.data[i+2];
+      if(g>150&&r<80&&b<80)continue;
+      const k=`${Math.round(r/32)*32},${Math.round(g/32)*32},${Math.round(b/32)*32}`;
+      counts.set(k,(counts.get(k)||0)+1);
+    }
+    bgOff=false;customBg=null;
+    // Use the generated canvas as custom BG via dataURL
+    pfCustomBgDataUrl=t.toDataURL('image/png');
+    pfCustomBgImg=new Image();pfCustomBgImg.src=pfCustomBgDataUrl;
+    pfCustomBgImg.onload=()=>drawBanner();
+    showToast('AI background applied');
+  };
+  img.src=pfBgImage;
+}
+let pfCustomBgDataUrl=null,pfCustomBgImg=null;
+
+function quantizeToC64(ctx,cvs){
+  const id=ctx.getImageData(0,0,64,64);
+  for(let i=0;i<id.data.length;i+=4){
+    if(id.data[i+3]<128)continue;
+    const r=id.data[i],g=id.data[i+1],b=id.data[i+2];
+    let best=0,bestDist=Infinity;
+    C64_PAL.forEach((hex,ci)=>{const pr=parseInt(hex.slice(1,3),16),pg=parseInt(hex.slice(3,5),16),pb=parseInt(hex.slice(5,7),16);const d=(r-pr)**2+(g-pg)**2+(b-pb)**2;if(d<bestDist){bestDist=d;best=ci;}});
+    const bh=C64_PAL[best];id.data[i]=parseInt(bh.slice(1,3),16);id.data[i+1]=parseInt(bh.slice(3,5),16);id.data[i+2]=parseInt(bh.slice(5,7),16);
+  }
+  ctx.putImageData(id,0,0);
+}
+
+function canvasToPixelGrid(ctx){
+  const grid=Array.from({length:64},()=>new Array(64).fill(0));
+  const id=ctx.getImageData(0,0,64,64);
+  for(let y=0;y<64;y++)for(let x=0;x<64;x++){
+    const i=(y*64+x)*4;if(id.data[i+3]<128)continue;
+    const r=id.data[i],g=id.data[i+1],b=id.data[i+2];
+    let best=0,bestDist=Infinity;
+    C64_PAL.forEach((hex,ci)=>{const pr=parseInt(hex.slice(1,3),16),pg=parseInt(hex.slice(3,5),16),pb=parseInt(hex.slice(5,7),16);const d=(r-pr)**2+(g-pg)**2+(b-pb)**2;if(d<bestDist){bestDist=d;best=ci;}});
+    grid[y][x]=best;
+  }
+  return grid;
+}
+
+function extractDominantColor(grid){
+  const cc=new Map();for(let y=0;y<64;y++)for(let x=0;x<64;x++){const ci=grid[y][x];if(ci>0)cc.set(ci,(cc.get(ci)||0)+1);}
+  if(!cc.size)return'#887ECB';
+  const top=[...cc.entries()].sort((a,b)=>b[1]-a[1]).find(([ci])=>{const h=C64_PAL[ci];const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return(0.299*r+0.587*g+0.114*b)>28;});
+  return top?C64_PAL[top[0]]:'#887ECB';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  COLOR PULSE — active color tracking + canvas blink
+// ═══════════════════════════════════════════════════════════════
+function updateColorPulse(){
+  const agents=canvasAgents.map(ca=>owned[ca.oi]).filter(ag=>ag&&!ag.hidden&&ag.pixelGrid);
+  const pw=document.getElementById('colorPulseWrap');
+  if(!agents.length){pw.style.display='none';return;}
+  pw.style.display='block';
+
+  // Count each C64 color across all visible agents
+  const counts=new Map();
+  agents.forEach(ag=>{
+    for(let y=0;y<64;y++)for(let x=0;x<64;x++){
+      const ci=ag.pixelGrid[y][x];if(ci===0)continue;
+      counts.set(ci,(counts.get(ci)||0)+1);
+    }
+  });
+
+  // Build swatch display
+  const sorted=[...counts.entries()].sort((a,b)=>b[1]-a[1]).filter(([ci])=>{
+    const h=C64_PAL[ci];const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);
+    return(0.299*r+0.587*g+0.114*b)>10;// exclude near-black
+  });
+
+  const grid=document.getElementById('cpGrid');grid.innerHTML='';
+  sorted.forEach(([ci,count])=>{
+    const hex=C64_PAL[ci];
+    const sw=document.createElement('div');sw.className='cp-swatch'+(pulsedColors.has(ci)?' active-color':'');
+    sw.style.background=hex;sw.style.setProperty('--sw-color',hex);
+    const cnt=document.createElement('div');cnt.className='cp-count';cnt.textContent=count;sw.appendChild(cnt);
+    sw.title=`${hex} · ${count} pixels · click to pulse`;
+    sw.onclick=()=>toggleColorPulse(ci,hex);
+    grid.appendChild(sw);
+  });
+
+  // Also update the palette (agent colors for BG)
+  updatePalette();
+}
+
+function toggleColorPulse(colorIdx,hex){
+  if(pulsedColors.has(colorIdx))pulsedColors.delete(colorIdx);
+  else pulsedColors.add(colorIdx);
+  updateColorPulse();
+  // Flash the canvas canvas areas that have this color
+  flashColorOnCanvas(colorIdx,hex);
+}
+
+function flashColorOnCanvas(colorIdx,hex){
+  // Draw colored overlay flashes on the banner canvas where this color appears
+  const DPR=devicePixelRatio||1;
+  const ctx=bCvs.getContext('2d');
+  const agents=canvasAgents.map(ca=>({ca,ag:owned[ca.oi]})).filter(({ag})=>ag&&!ag.hidden&&ag.pixelGrid);
+
+  agents.forEach(({ca,ag})=>{
+    const{x,y,size}=ca;const scale=size/64;
+    const pixelSize=scale;
+    for(let py=0;py<64;py++){
+      for(let px=0;px<64;px++){
+        if(ag.pixelGrid[py][px]===colorIdx){
+          ctx.fillStyle=hex+'88';// semi-transparent flash
+          ctx.fillRect(Math.round(x+px*scale),Math.round(y+py*scale),Math.max(1,Math.round(pixelSize)),Math.max(1,Math.round(pixelSize)));
+        }
+      }
+    }
+  });
+
+  // Clear flash after 400ms and redraw
+  setTimeout(()=>{drawBanner();},400);
+}
+
+// Continuous pulse animation for active colors
+function startColorPulseLoop(){
+  if(colorPulseInterval)clearInterval(colorPulseInterval);
+  colorPulseInterval=setInterval(()=>{
+    if(pulsedColors.size===0)return;
+    // Flash each pulsed color on the canvas
+    pulsedColors.forEach(ci=>{
+      const hex=C64_PAL[ci];
+      flashColorOnCanvas(ci,hex);
+    });
+  },800);
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+//  MUSIC-REACTIVE SHADOW ENGINE
+// ═══════════════════════════════════════════════════════════════
+const MSH_TYPES = [
+  {id:'pulse',  name:'Pulse',   color:'#6ABFC6',
+   desc:'Smooth bloom outward on beat, eased decay, multi-layer depth',
+   draw(ctx,x,y,size,color,decay,tick,ag){
+     const blur=+document.getElementById('mshBlur').value;
+     const op=+document.getElementById('mshOp').value/100;
+     const layers=+document.getElementById('mshLayers').value;
+     const eased=1-Math.pow(1-decay,2);
+     for(let i=layers;i>=1;i--){
+       const frac=i/layers;
+       ctx.shadowBlur=blur*eased*frac*1.6;ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;
+       ctx.shadowColor=hexA(color,op*eased*frac*0.75);
+       drawAgImg(ctx,ag,x,y,size);
+     }
+   }},
+  {id:'strobe', name:'Strobe',  color:'#FFFFFF',
+   desc:'Hard on/off burst exactly on beat — instant cut to dark',
+   draw(ctx,x,y,size,color,decay,tick,ag){
+     if(decay<0.6)return;
+     ctx.shadowBlur=+document.getElementById('mshBlur').value*2.4;ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;
+     ctx.shadowColor=hexA(color,1.0);
+     drawAgImg(ctx,ag,x,y,size);
+   }},
+  {id:'orbit',  name:'Orbit',   color:'#C9D487',
+   desc:'Multiple shadow copies rotate clockwise, pulse on beat',
+   draw(ctx,x,y,size,color,decay,tick,ag){
+     const reach=+document.getElementById('mshReach').value*(0.5+decay*0.5);
+     const spd=+document.getElementById('mshSpd').value;
+     const layers=+document.getElementById('mshLayers').value;
+     const op=+document.getElementById('mshOp').value/100;
+     const blur=+document.getElementById('mshBlur').value*0.65;
+     for(let i=0;i<layers;i++){
+       const angle=tick*0.03*(spd/5)+(i*Math.PI*2/layers);
+       ctx.shadowOffsetX=Math.cos(angle)*reach;ctx.shadowOffsetY=Math.sin(angle)*reach;
+       ctx.shadowBlur=blur;ctx.shadowColor=hexA(color,op*0.5*(decay*0.5+0.5));
+       drawAgImg(ctx,ag,x,y,size);
+     }
+   }},
+  {id:'chroma', name:'Chroma',  color:'#A057A3',
+   desc:'Each layer cycles a different C64 colour — chromatic breathing',
+   draw(ctx,x,y,size,color,decay,tick,ag){
+     const layers=+document.getElementById('mshLayers').value;
+     const blur=+document.getElementById('mshBlur').value;
+     const op=+document.getElementById('mshOp').value/100;
+     const spd=+document.getElementById('mshSpd').value;
+     const agIdx=C64_HEX.indexOf(color.replace('#','').toUpperCase());
+     for(let i=0;i<layers;i++){
+       const ci=Math.floor((tick*0.08*(spd/5)+i*3+agIdx))%C64_HEX.length;
+       const ld=decay*(1-i*0.18);if(ld<=0)continue;
+       ctx.shadowBlur=blur*ld*(1-i*0.15);ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;
+       ctx.shadowColor=hexA('#'+C64_HEX[ci],op*ld*0.85);
+       drawAgImg(ctx,ag,x,y,size);
+     }
+   }},
+  {id:'ripple', name:'Ripple',  color:'#5CAB5E',
+   desc:'Expanding rings emanate outward from agent on each beat',
+   draw(ctx,x,y,size,color,decay,tick,ag){
+     const layers=+document.getElementById('mshLayers').value;
+     const blur=+document.getElementById('mshBlur').value;
+     const op=+document.getElementById('mshOp').value/100;
+     for(let i=0;i<layers;i++){
+       const rd=Math.max(0,decay-i*0.16);if(rd<=0)continue;
+       ctx.shadowBlur=blur*rd*(1+i*0.45);ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;
+       ctx.shadowColor=hexA(color,op*rd*0.65*(1-i*0.2));
+       drawAgImg(ctx,ag,x,y,size);
+     }
+   }},
+  {id:'glitch', name:'Glitch',  color:'#CB7E75',
+   desc:'Shadow jumps, stutters, splits — digital corruption effect',
+   draw(ctx,x,y,size,color,decay,tick,ag){
+     if(decay<0.05)return;
+     const layers=+document.getElementById('mshLayers').value;
+     const blur=+document.getElementById('mshBlur').value;
+     const op=+document.getElementById('mshOp').value/100;
+     const spd=+document.getElementById('mshSpd').value;
+     const seed=Math.floor(tick*0.5*(spd/5));
+     for(let i=0;i<layers;i++){
+       const s=(seed+i*37)%100;
+       const jx=(((s*137+i*73)%40)-20)*decay;
+       const jy=(((s*97+i*31)%40)-20)*decay;
+       if((s+i)%3===0)continue;
+       ctx.shadowBlur=blur*(0.3+(s%5)*0.14)*decay;
+       ctx.shadowOffsetX=jx;ctx.shadowOffsetY=jy;
+       ctx.shadowColor=hexA(color,op*decay*0.65);
+       drawAgImg(ctx,ag,x,y,size);
+     }
+   }},
+];
+
+// Assign shadow type to each agent round-robin
+const MSH_ASSIGN={}; // agId → MSH_TYPES index
+let mshDecays={}; // agId → 0-1
+let mshTick=0;
+let mshEnabled=true, mshHideAgent=false, mshStatic=false;
+let mshAnimFrame=null;
+
+function getMSHType(agId){
+  if(!MSH_ASSIGN[agId]){
+    const ids=Object.keys(MSH_ASSIGN);
+    MSH_ASSIGN[agId]=MSH_TYPES[ids.length%MSH_TYPES.length].id;
+  }
+  return MSH_TYPES.find(t=>t.id===MSH_ASSIGN[agId])||MSH_TYPES[0];
+}
+
+function hexA(h,a){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}
+
+function drawAgImg(ctx,ag,x,y,size){
+  if(ag?.bitmap)ctx.drawImage(ag.bitmap,x,y,size,size);
+  else if(ag?.dimg&&ag.dimg.complete)ctx.drawImage(ag.dimg,x,y,size,size);
+}
+
+function toggleMShadow(){mshEnabled=!mshEnabled;const b=document.getElementById('mshEnable');b.textContent=mshEnabled?'ON':'OFF';b.classList.toggle('on',mshEnabled);}
+function toggleMShadowHide(){mshHideAgent=!mshHideAgent;const b=document.getElementById('mshHide');b.textContent=mshHideAgent?'Show Agent':'Hide Agent';b.classList.toggle('on',mshHideAgent);b.classList.toggle('hide',mshHideAgent);}
+function toggleMShadowStatic(){mshStatic=!mshStatic;const b=document.getElementById('mshStatic');b.textContent=mshStatic?'Static ON':'Static Preview';b.classList.toggle('on',mshStatic);b.classList.toggle('static',mshStatic);}
+
+// Called by music engine when agent fires on beat
+function triggerMShadow(agId){
+  mshDecays[agId]=1.0;
+  // assign type if not yet
+  getMSHType(agId);
+  // Flash club lights
+  const color=agentColors[agId]||'#887ECB';
+  document.body.classList.add('beat-on');
+  setTimeout(()=>document.body.classList.remove('beat-on'),160);
+}
+
+// Replace drawBanner to include music shadow pass
+const _origDrawBanner=drawBanner;
+function drawBanner(){
+  const DPR=devicePixelRatio||1;bCvs.width=CW*DPR;bCvs.height=CH*DPR;bCvs.style.width='100%';
+  const ctx=bCvs.getContext('2d');ctx.scale(DPR,DPR);ctx.imageSmoothingEnabled=false;
+
+  // Background
+  if(bgOff)ctx.clearRect(0,0,CW,CH);
+  else if(pfCustomBgImg&&pfCustomBgImg.complete&&!customBg){ctx.drawImage(pfCustomBgImg,0,0,CW,CH);}
+  else{ctx.fillStyle=customBg||bgColor;ctx.fillRect(0,0,CW,CH);}
+
+  if(!canvasAgents.length){
+    ctx.fillStyle='#334';ctx.font='22px monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('Add agents from the grid below',CW/2,CH/2);
+    drawTextOverlay(ctx);return;
+  }
+
+  const bd={bg:document.getElementById('bdBg').value,tx:document.getElementById('bdTx').value};
+
+  // ── SHADOW PASS (behind agents) ──────────────────────────────
+  if(mshEnabled){
+    for(let i=0;i<canvasAgents.length;i++){
+      const ca=canvasAgents[i];const ag=owned[ca.oi];if(ag?.hidden)continue;
+      const{x,y,size}=ca;
+      const sType=getMSHType(ag?.id||i);
+      const decay=mshStatic?0.75:(mshDecays[ag?.id]||0);
+      if(decay<0.01&&!mshStatic)continue;
+      const color=agentColors[ag?.id]||'#887ECB';
+      ctx.save();
+      sType.draw(ctx,x,y,size,color,decay,mshTick,ag);
+      ctx.restore();
+      ctx.shadowBlur=0;ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.shadowColor='transparent';
+    }
+  }
+
+  // ── STATIC SHADOW (original controls) ───────────────────────
+  const sh={ox:+gv('shX'),oy:+gv('shY'),blur:+gv('shB'),color:document.getElementById('shC').value,op:+gv('shO')/100};
+
+  // ── AGENT PASS ───────────────────────────────────────────────
+  for(let i=0;i<canvasAgents.length;i++){
+    const ca=canvasAgents[i];const ag=owned[ca.oi];if(ag?.hidden)continue;const{x,y,size}=ca;
+    if(!mshHideAgent){
+      if(shadowOn){ctx.shadowOffsetX=sh.ox;ctx.shadowOffsetY=sh.oy;ctx.shadowBlur=sh.blur;ctx.shadowColor=rgba(sh.color,sh.op);}
+      if(ag?.bitmap)ctx.drawImage(ag.bitmap,x,y,size,size);
+      else if(ag?.dimg&&ag.dimg.complete)ctx.drawImage(ag.dimg,x,y,size,size);
+      else{ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.shadowBlur=0;ctx.fillStyle='#111118';ctx.fillRect(x,y,size,size);}
+    }
+    if(badgeOn&&size>40){
+      ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.shadowBlur=0;
+      const bh=Math.max(14,size*0.13);ctx.fillStyle=rgba(bd.bg,0.8);ctx.fillRect(x,y+size-bh,size,bh);
+      ctx.fillStyle=bd.tx;ctx.font=`${Math.max(9,Math.floor(bh*.65))}px monospace`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('#'+(ag?.id||'?'),x+size/2,y+size-bh/2);
+    }
+    if(selectedCA.has(i)){
+      ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.shadowBlur=0;
+      ctx.strokeStyle='rgba(136,126,203,.8)';ctx.lineWidth=3;
+      ctx.strokeRect(x+1,y+1,size-2,size-2);
+      ctx.fillStyle='rgba(136,126,203,.8)';ctx.fillRect(x+size-8,y+size-8,8,8);
+    }
+    ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.shadowBlur=0;
+  }
+
+  // ── TEXT OVERLAY ─────────────────────────────────────────────
+  drawTextOverlay(ctx);
+}
+
+// Animation loop for shadow decay
+function startMSHLoop(){
+  if(mshAnimFrame)cancelAnimationFrame(mshAnimFrame);
+  function loop(){
+    mshTick++;
+    const decay=+document.getElementById('mshDecay').value/100*0.18+0.01;
+    Object.keys(mshDecays).forEach(id=>{if(mshDecays[id]>0)mshDecays[id]=Math.max(0,mshDecays[id]-decay);});
+    drawBanner();
+    mshAnimFrame=requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+// Build shadow type legend
+function buildShadowTypeRef(){
+  const el=document.getElementById('shadowTypeRef');if(!el)return;
+  el.innerHTML='<div style="font-size:6px;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin-bottom:5px">6 Shadow Types — assigned automatically</div>'+
+    MSH_TYPES.map(t=>`<div class="str-item">
+      <div class="str-dot" style="background:${t.color};box-shadow:0 0 5px ${t.color}"></div>
+      <div class="str-name" style="color:${t.color}aa">${t.name}</div>
+      <div class="str-desc">${t.desc}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TEXT OVERLAY — Khora Style
+// ═══════════════════════════════════════════════════════════════
+let toText='',toAlign='left',toStyle='normal',toAnimate=false,toAnimTick=0;
+
+function updateTextOverlay(){
+  toText=document.getElementById('toText').value;drawBanner();
+}
+function setTextAlign(a,btn){toAlign=a;document.querySelectorAll('.to-btn[id^="toAlign"]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');drawBanner();}
+function setTextStyle(s,btn){toStyle=s;document.querySelectorAll('.to-btn[id^="toStyle"]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');drawBanner();}
+function toggleTextAnimate(){
+  toAnimate=!toAnimate;
+  const btn=document.getElementById('toAnimate');
+  btn.classList.toggle('active',toAnimate);btn.textContent=toAnimate?'Animate ON':'Animate';
+}
+
+function drawTextOverlay(ctx){
+  if(!toText.trim())return;
+  const size=+document.getElementById('toSize').value;
+  const spacing=+document.getElementById('toSpacing').value;
+  const yPct=+document.getElementById('toY').value/100;
+  const color=document.getElementById('toColor').value;
+  const y=Math.round(CH*yPct);
+  let x;
+  ctx.save();
+  ctx.imageSmoothingEnabled=true;
+  // Khora style: Courier New, uppercase, wide letter-spacing
+  ctx.font=`${size}px 'Courier New',monospace`;
+  ctx.letterSpacing=spacing+'px';
+  ctx.textBaseline='middle';
+
+  // Animate: slight opacity pulse or position drift
+  if(toAnimate){
+    const pulse=0.7+Math.sin(toAnimTick*0.05)*0.3;
+    ctx.globalAlpha=pulse;
+  }
+
+  // Align
+  if(toAlign==='center'){ctx.textAlign='center';x=CW/2;}
+  else if(toAlign==='right'){ctx.textAlign='right';x=CW-48;}
+  else{ctx.textAlign='left';x=48;}
+
+  const txt=toText.toUpperCase();
+
+  // Style
+  if(toStyle==='glow'){
+    ctx.shadowColor=color;ctx.shadowBlur=20;ctx.fillStyle=color;ctx.fillText(txt,x,y);
+    ctx.shadowBlur=40;ctx.fillText(txt,x,y);ctx.shadowBlur=0;
+  } else if(toStyle==='outline'){
+    ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.strokeText(txt,x,y);
+    ctx.fillStyle=bgColor||'#050508';ctx.fillText(txt,x,y);
+  } else if(toStyle==='shadow'){
+    ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillText(txt,x+3,y+3);
+    ctx.fillStyle=color;ctx.fillText(txt,x,y);
+  } else {
+    ctx.fillStyle=color;ctx.fillText(txt,x,y);
+  }
+
+  ctx.globalAlpha=1;ctx.shadowBlur=0;ctx.restore();
+}
+
+// Animate text continuously
+(function textAnimLoop(){
+  requestAnimationFrame(textAnimLoop);
+  if(toAnimate){toAnimTick++;drawBanner();}
+})();
+
+// ═══════════════════════════════════════════════════════════════
+//  VIDEO / GIF RECORDING
+// ═══════════════════════════════════════════════════════════════
+let vidRes=1080,vidFmt='webm',vidRecording=false;
+let vidStream=null,vidRec=null,vidChunks=[],vidBlob=null;
+let vidTimerInt=null,vidSecs=0;
+// GIF frames
+let gifFrames=[],gifCapInt=null;
+
+function setVidRes(r,btn){
+  vidRes=r;
+  document.querySelectorAll('[id^="resBtn"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function setVidFmt(f,btn){
+  vidFmt=f;
+  document.querySelectorAll('[id^="fmtWebmBtn"],[id^="fmtMp4Btn"],[id^="fmtGifBtn"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+async function toggleVidRec(){
+  if(vidRecording)await stopVidRec();else await startVidRec();
+}
+
+async function startVidRec(){
+  // Create offscreen 4K canvas
+  const scale=vidRes===2160?4:vidRes===1080?2:1;
+  const offW=CW*scale,offH=CH*scale;
+  const off=document.createElement('canvas');off.width=offW;off.height=offH;
+  const offCtx=off.getContext('2d');
+
+  vidChunks=[];gifFrames=[];vidBlob=null;vidRecording=true;
+  vidSecs=0;
+  document.getElementById('vidStatus').textContent=`Recording ${vidRes==='gif'?'GIF':vidRes+'p'} at ${gv('vidFps')}fps...`;
+  document.getElementById('vidStatus').className='vidrec-status rec';
+  document.getElementById('vidRecBtn').textContent='■ Stop Recording';
+  document.getElementById('vidRecBtn').classList.add('rec-on');
+  document.getElementById('vidDlBtn').disabled=true;
+
+  // Timer
+  vidTimerInt=setInterval(()=>{vidSecs++;const m=Math.floor(vidSecs/60),s=vidSecs%60;document.getElementById('vidTimer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;},1000);
+
+  if(vidFmt==='gif'){
+    // Capture frames at ~15fps for GIF
+    gifCapInt=setInterval(()=>{
+      offCtx.drawImage(bCvs,0,0,offW,offH);
+      gifFrames.push(off.toDataURL('image/png'));
+    },1000/Math.min(+gv('vidFps'),15));
+  } else {
+    // MediaRecorder from offscreen canvas
+    const fps=+gv('vidFps');
+    // Draw loop synced to banner
+    const drawLoop=()=>{
+      if(!vidRecording)return;
+      offCtx.clearRect(0,0,offW,offH);
+      offCtx.drawImage(bCvs,0,0,offW,offH);
+      requestAnimationFrame(drawLoop);
+    };
+    drawLoop();
+    const mt=MediaRecorder.isTypeSupported('video/webm;codecs=vp9')?'video/webm;codecs=vp9':'video/webm';
+    vidStream=off.captureStream(fps);
+    vidRec=new MediaRecorder(vidStream,{mimeType:mt,videoBitsPerSecond:vidRes===2160?40000000:vidRes===1080?12000000:5000000});
+    vidRec.ondataavailable=e=>{if(e.data?.size>0)vidChunks.push(e.data);};
+    vidRec.onstop=()=>{
+      vidBlob=new Blob(vidChunks,{type:mt});
+      document.getElementById('vidDlBtn').disabled=false;
+      document.getElementById('vidStatus').textContent=`✓ ${vidRes}p recording ready — ${(vidBlob.size/1024/1024).toFixed(1)}MB`;
+      document.getElementById('vidStatus').className='vidrec-status ok';
+    };
+    vidRec.start(100);
+  }
+}
+
+async function stopVidRec(){
+  vidRecording=false;
+  clearInterval(vidTimerInt);
+  clearInterval(gifCapInt);
+  document.getElementById('vidRecBtn').textContent='⏺ Record Canvas';
+  document.getElementById('vidRecBtn').classList.remove('rec-on');
+
+  if(vidFmt==='gif'){
+    document.getElementById('vidStatus').textContent=`Building GIF from ${gifFrames.length} frames...`;
+    document.getElementById('vidStatus').className='vidrec-status';
+    // Build animated GIF using canvas-based frame export (as WebM fallback if no GIF lib)
+    // Download as zip of PNG frames for now, or use the WebM export
+    buildGifFromFrames();
+  } else {
+    await new Promise(r=>setTimeout(r,350));
+    vidRec?.stop();
+    if(vidStream)vidStream.getTracks().forEach(t=>t.stop());
+  }
+}
+
+function buildGifFromFrames(){
+  // Without a GIF library we export as a video/webm from frames
+  // Offer frames as a ZIP download with instructions, OR
+  // Create a canvas-based animated display + webm
+  if(!gifFrames.length){document.getElementById('vidStatus').textContent='No frames captured';return;}
+  // Create a simple animated webm from the frames
+  const canvas=document.createElement('canvas');
+  const scale=vidRes===2160?4:vidRes===1080?2:1;
+  canvas.width=CW*scale;canvas.height=CH*scale;
+  const ctx=canvas.getContext('2d');
+  const fps=Math.min(+gv('vidFps'),15);
+  const mt='video/webm';
+  const stream=canvas.captureStream(fps);
+  const rec=new MediaRecorder(stream,{mimeType:mt});
+  const chunks=[];
+  rec.ondataavailable=e=>{if(e.data?.size>0)chunks.push(e.data);};
+  rec.onstop=()=>{
+    vidBlob=new Blob(chunks,{type:mt});
+    document.getElementById('vidDlBtn').disabled=false;
+    document.getElementById('vidStatus').textContent=`✓ Animated WebM ready (${gifFrames.length} frames) · ${(vidBlob.size/1024/1024).toFixed(1)}MB`;
+    document.getElementById('vidStatus').className='vidrec-status ok';
+  };
+  rec.start();
+  let fi=0;
+  function drawFrame(){
+    if(fi>=gifFrames.length){rec.stop();stream.getTracks().forEach(t=>t.stop());return;}
+    const img=new Image();img.onload=()=>{ctx.drawImage(img,0,0);fi++;setTimeout(drawFrame,1000/fps);};img.src=gifFrames[fi];
+  }
+  drawFrame();
+}
+
+function downloadVid(){
+  if(!vidBlob)return;
+  const ext=vidFmt==='gif'?'webm':vidFmt;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(vidBlob);
+  a.download=`booa-${vidRes}p-${Date.now()}.${ext}`;
+  a.click();
+}
+
 // ═══════════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════════
@@ -1513,6 +2620,9 @@ buildEQUI();
 drawBanner();
 refreshMusic();
 buildClipsGrid();
+startColorPulseLoop();
+buildShadowTypeRef();
+startMSHLoop();
 // Animate club lights on load
 document.querySelectorAll('.light').forEach(l=>setTimeout(()=>l.style.opacity='1',500));
 </script>
